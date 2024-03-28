@@ -5,5 +5,5 @@ Content-Type: application/json
 {
   "service": "com.cola.kfcrpc.demo.api.UserService",
   "methodName": "findById",
-  "params": [200]
+  "args": [200]
 }

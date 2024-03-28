@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.ObjectUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,7 +33,7 @@ public class ProviderBootStrap implements ApplicationContextAware {
 
     public RpcResponse<Object> invoke(RpcRequest rpcRequest) {
         String service = rpcRequest.getService();
-        Object[] params = rpcRequest.getParams();
+        Object[] params = rpcRequest.getArgs();
         String methodName = rpcRequest.getMethodName();
         Object serviceImpl = stub.getOrDefault(service, null);
         if (serviceImpl == null){
