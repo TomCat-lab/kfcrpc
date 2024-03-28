@@ -1,0 +1,9 @@
+#### findById
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+  "service": "com.cola.kfcrpc.demo.api.UserService",
+  "methodName": "findById",
+  "params": [200]
+}
