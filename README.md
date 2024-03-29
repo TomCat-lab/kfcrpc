@@ -37,11 +37,11 @@
 
 1. 克隆仓库：
    ```
-   git clone [(https://github.com/TomCat-lab/kfcrpc)]
+   git clone https://github.com/TomCat-lab/kfcrpc
    ```
 2. 进入项目目录并安装依赖：
    ```
-   cd 分布式服务框架项目
+   cd kfcrpc
    mvn install
    ```
 3. 运行服务提供者和消费者：
