@@ -37,7 +37,7 @@
 
 1. 克隆仓库：
    ```
-   git clone [[仓库URL](https://github.com/TomCat-lab/kfcrpc)]
+   git clone [(https://github.com/TomCat-lab/kfcrpc)]
    ```
 2. 进入项目目录并安装依赖：
    ```
