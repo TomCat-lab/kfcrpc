@@ -8,4 +8,5 @@ import java.lang.annotation.Target;
 public class RpcResponse<T> {
     T data;
     boolean status;
+    Exception ex;
 }

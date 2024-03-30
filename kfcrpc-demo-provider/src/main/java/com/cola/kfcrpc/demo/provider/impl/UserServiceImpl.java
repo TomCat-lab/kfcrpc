@@ -12,4 +12,9 @@ public class UserServiceImpl implements UserService {
     public User findById(Integer id) {
         return new User("kfc",id);
     }
+
+    @Override
+    public User findById(int id, String name) {
+         return new User(name,id);
+    }
 }

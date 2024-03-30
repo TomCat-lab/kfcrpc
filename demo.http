@@ -7,3 +7,7 @@ Content-Type: application/json
   "methodName": "findById",
   "args": [200]
 }
+
+#### findById -- test 404ex
+GET http://localhost:8082/mock404?id = 404
+

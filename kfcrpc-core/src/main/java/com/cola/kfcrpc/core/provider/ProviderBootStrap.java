@@ -32,6 +32,7 @@ public class ProviderBootStrap implements ApplicationContextAware {
    }
 
     public RpcResponse<Object> invoke(RpcRequest rpcRequest) {
+
         String service = rpcRequest.getService();
         Object[] params = rpcRequest.getArgs();
         String methodName = rpcRequest.getMethodName();
@@ -41,18 +42,18 @@ public class ProviderBootStrap implements ApplicationContextAware {
             return null;
         }
         Method method = findMethod(serviceImpl,methodName);
-
+        RpcResponse<Object> rpcResponse = new RpcResponse<>();
         try {
             Object  data = method.invoke(serviceImpl, params);
-            RpcResponse<Object> rpcResponse = new RpcResponse<>();
             rpcResponse.setData(data);
             rpcResponse.setStatus(true);
             return rpcResponse;
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
+        } catch (IllegalAccessException e) {
+            rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
+        return rpcResponse;
     }
 
 

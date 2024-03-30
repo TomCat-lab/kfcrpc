@@ -36,16 +36,16 @@ public class KfcInvocationHandler implements InvocationHandler {
            }else {
                return data;
            }
-       }else {
-           return null;
+       }else if (result.getEx() != null){
+           throw new RuntimeException(result.getEx().getMessage());
        }
-
+        return null;
     }
     MediaType mediaType = MediaType.parse("application/json");
     OkHttpClient client = new OkHttpClient().newBuilder()
-            .connectTimeout(1, TimeUnit.MILLISECONDS)
-            .readTimeout(1,TimeUnit.MILLISECONDS)
-            .writeTimeout(1,TimeUnit.MILLISECONDS)
+            .connectTimeout(1_000, TimeUnit.MILLISECONDS)
+            .readTimeout(1_000,TimeUnit.MILLISECONDS)
+            .writeTimeout(1_000,TimeUnit.MILLISECONDS)
             .connectionPool(new ConnectionPool(16,60,TimeUnit.SECONDS))
             .build();
 
