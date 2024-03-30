@@ -17,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,9 +80,10 @@ public class ProviderBootStrap implements ApplicationContextAware {
         if (params == null || method.getParameterCount() ==0) return null;
         Object[] cast = new Object[params.length];
         Class<?>[] parameterTypes = method.getParameterTypes();
+        Type[] genricTypes = method.getGenericParameterTypes();
         for (int i = 0; i < method.getParameterTypes().length; i++) {
             try {
-               cast[i] = TypeUtils.convert(params[i],parameterTypes[i]);
+               cast[i] = TypeUtils.convert(params[i],parameterTypes[i],genricTypes[i]);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

@@ -39,7 +39,7 @@ public class KfcInvocationHandler implements InvocationHandler {
            if (data instanceof JSONObject j){
                return j.toJavaObject(method.getReturnType());
            }else {
-               return TypeUtils.convert(data,method);
+               return TypeUtils.convert(data,method,null);
            }
        }else if (result.getEx() != null){
            throw new RuntimeException(result.getEx().getMessage());
