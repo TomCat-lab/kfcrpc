@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
   "service": "com.cola.kfcrpc.demo.api.UserService",
-  "methodName": "findById",
-  "args": [200]
+  "methodSign": "findById@2_int_java.lang.String",
+  "args": [21,"cola"]
 }
 
 #### findById -- test 404ex

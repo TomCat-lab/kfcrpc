@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.utils.MethodUtils;
+import com.cola.kfcrpc.core.utils.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -33,12 +34,12 @@ public class KfcInvocationHandler implements InvocationHandler {
                 .build();
 
        RpcResponse<Object> result = post(rpcRequest);
-       if (result.isStatus()){
+       if (result.isSuccess()){
            Object data = result.getData();
            if (data instanceof JSONObject j){
                return j.toJavaObject(method.getReturnType());
            }else {
-               return data;
+               return TypeUtils.convert(data,method);
            }
        }else if (result.getEx() != null){
            throw new RuntimeException(result.getEx().getMessage());

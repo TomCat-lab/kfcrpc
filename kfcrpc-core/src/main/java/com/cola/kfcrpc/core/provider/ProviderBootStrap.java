@@ -5,6 +5,7 @@ import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.meta.ProviderMeta;
 import com.cola.kfcrpc.core.utils.MethodUtils;
+import com.cola.kfcrpc.core.utils.TypeUtils;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.util.MultiValueMap;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,9 +62,10 @@ public class ProviderBootStrap implements ApplicationContextAware {
         ProviderMeta providerMeta = findMetaBySign(providerMetas,methodSign);
         RpcResponse<Object> rpcResponse = new RpcResponse<>();
         try {
+            params = castArgType(params, providerMeta.getMethod());
             Object  data = providerMeta.getMethod().invoke(providerMeta.getImpl(), params);
             rpcResponse.setData(data);
-            rpcResponse.setStatus(true);
+            rpcResponse.setSuccess(true);
             return rpcResponse;
         } catch (InvocationTargetException e) {
             rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
@@ -72,6 +73,20 @@ public class ProviderBootStrap implements ApplicationContextAware {
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;
+    }
+
+    private Object[] castArgType(Object[] params, Method method) {
+        if (params == null || method.getParameterCount() ==0) return null;
+        Object[] cast = new Object[params.length];
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for (int i = 0; i < method.getParameterTypes().length; i++) {
+            try {
+               cast[i] = TypeUtils.convert(params[i],parameterTypes[i]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return cast;
     }
 
 
