@@ -49,9 +49,9 @@ public class KfcrpcDemoConsumerApplication {
     private void testAll() {
 //        User user = userService.findById(20);
 //        log.info("username:{},id:{}",user.getName(),user.getId());
-
-//        User user1 = userService.findById(21,"cola");
-//        log.info("username:{},id:{}",user1.getName(),user1.getId());
+//        System.out.printf("user:{}", userService.toString());
+        User user1 = userService.findById(21,"cola");
+        System.out.printf(user1.toString());
 
     }
 

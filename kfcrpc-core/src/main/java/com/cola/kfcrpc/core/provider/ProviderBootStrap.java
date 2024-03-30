@@ -50,7 +50,7 @@ public class ProviderBootStrap implements ApplicationContextAware {
             return rpcResponse;
         } catch (InvocationTargetException e) {
             rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             rpcResponse.setEx(new RuntimeException(e.getMessage()));
         }
         return rpcResponse;

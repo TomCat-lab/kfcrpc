@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
+import com.cola.kfcrpc.core.utils.MethodUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -22,6 +23,9 @@ public class KfcInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        if (MethodUtils.checkObejectMethod(method)) return null;
+
         RpcRequest rpcRequest = RpcRequest.builder()
                 .service(service.getCanonicalName())
                 .methodName(method.getName())
