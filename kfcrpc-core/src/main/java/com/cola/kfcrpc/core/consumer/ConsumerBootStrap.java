@@ -25,6 +25,7 @@ public class ConsumerBootStrap implements ApplicationContextAware {
     public void start(){
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
         for (String beanDefinitionName : beanDefinitionNames) {
+            //todo filter package name
             List<Field> fields = new ArrayList<>();
             Object bean = applicationContext.getBean(beanDefinitionName);
             Arrays.stream(bean.getClass().getSuperclass().getDeclaredFields())

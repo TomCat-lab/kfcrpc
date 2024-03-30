@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RpcRequest {
     String service;
-    String methodName;
+    String methodSign;
     Object[] args;
 
 }

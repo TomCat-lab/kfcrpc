@@ -28,7 +28,7 @@ public class KfcInvocationHandler implements InvocationHandler {
 
         RpcRequest rpcRequest = RpcRequest.builder()
                 .service(service.getCanonicalName())
-                .methodName(method.getName())
+                .methodSign(MethodUtils.sign(method))
                 .args(args)
                 .build();
 
