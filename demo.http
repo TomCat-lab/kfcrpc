@@ -11,3 +11,6 @@ Content-Type: application/json
 #### findById -- test 404ex
 GET http://localhost:8082/mock404?id = 404
 
+#### findById -- test loadbalancer
+GET http://localhost:8082/findById?id = 20
+

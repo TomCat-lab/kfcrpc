@@ -1,2 +1,4 @@
 server:
   port: 8082
+kfcrpc:
+  providers: http://localhost:8080/,http://localhost:8083/

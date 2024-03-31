@@ -3,6 +3,8 @@ package com.cola.kfcrpc.demo.provider.impl;
 import com.cola.kfcrpc.core.annnotation.KfcProvider;
 import com.cola.kfcrpc.demo.api.User;
 import com.cola.kfcrpc.demo.api.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,8 +16,12 @@ import java.util.Map;
 @Service
 @KfcProvider
 public class UserServiceImpl implements UserService {
+    @Autowired
+    Environment environment;
     public User findById(Integer id) {
-        return new User("kfc",id);
+        String port = environment.getProperty("server.port");
+        long l = System.currentTimeMillis();
+        return new User("kfc_"+port+"_"+l,id);
     }
 
     @Override

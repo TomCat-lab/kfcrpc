@@ -1,6 +1,8 @@
 package com.cola.kfc.rpc.demo.consumer;
 
 import com.cola.kfcrpc.core.annnotation.KfcConsumer;
+import com.cola.kfcrpc.core.api.RpcRequest;
+import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.consumer.ConsumserConfig;
 import com.cola.kfcrpc.demo.api.OrderService;
 import com.cola.kfcrpc.demo.api.User;
@@ -11,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +36,11 @@ public class KfcrpcDemoConsumerApplication {
         SpringApplication.run(KfcrpcDemoConsumerApplication.class, args);
     }
 
+    @RequestMapping("/findById")
+    public User findById(@RequestParam("id") Integer id){
+       return userService.findById(id);
+    }
+
     @Bean
     ApplicationRunner runner(){
         return x->{
@@ -46,7 +54,7 @@ public class KfcrpcDemoConsumerApplication {
     }
 
     private void testAll() {
-/*
+
         System.out.println("Case 1. >>===[常规int类型，返回User对象]===");
         User user = userService.findById(20);
         log.info("RPC result userService.findById(1):{}",user);
@@ -84,7 +92,7 @@ public class KfcrpcDemoConsumerApplication {
         System.out.println(" ===> userService.getLongIds(): ");
         for (long id : userService.getLongIds()) {
             System.out.println(id);
-        } */
+        }
 
         System.out.println("Case 10. >>===[处理泛型");
         List<LinkedHashMap<String, String>> ids = userService.getIds(Arrays.asList(new User("cola", 20)));
