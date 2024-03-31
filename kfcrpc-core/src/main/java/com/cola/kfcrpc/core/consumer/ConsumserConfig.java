@@ -1,20 +1,26 @@
 package com.cola.kfcrpc.core.consumer;
 
 import com.cola.kfcrpc.core.api.LoadBalancer;
+import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.cluster.RandomLoadBalancer;
 import com.cola.kfcrpc.core.cluster.RoundRibbonLoadBalancer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import java.util.List;
+
 @Configuration
 @Slf4j
 public class ConsumserConfig {
 
+    @Value("${kfcrpc.providers}")
+    String providers;
     @Bean
     public ConsumerBootStrap consumerBootStrap(){
         return new ConsumerBootStrap();
@@ -46,5 +52,10 @@ public class ConsumserConfig {
     @Bean
     Router router(){
         return Router.Default;
+    }
+
+    @Bean(initMethod = "start",destroyMethod = "stop")
+    RegistryCenter registryCenter(){
+        return new RegistryCenter.staticRegistryCenter(List.of(providers.split(",")));
     }
 }

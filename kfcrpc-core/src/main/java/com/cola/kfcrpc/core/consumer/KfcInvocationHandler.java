@@ -41,7 +41,8 @@ public class KfcInvocationHandler implements InvocationHandler {
         Router router = rpcContext.getRouter();
         LoadBalancer loadBalancer = rpcContext.getLoadBalancer();
         List<String> providers = router.route(this.providers);
-        String url = loadBalancer.choose(providers);
+        String url = (String) loadBalancer.choose(providers);
+        log.info("loadBalancer.choose:{}",url);
         RpcResponse<Object> result = post(rpcRequest,url);
        if (result.isSuccess()){
            Object data = result.getData();

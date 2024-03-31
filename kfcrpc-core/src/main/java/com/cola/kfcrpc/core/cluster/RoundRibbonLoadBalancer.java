@@ -12,10 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Description: 轮询算法
  */
 
-public class RoundRibbonLoadBalancer implements LoadBalancer {
+public class RoundRibbonLoadBalancer<T> implements LoadBalancer<T> {
     private final AtomicInteger index = new AtomicInteger(0);
     @Override
-    public String choose(List<String> p) {
+    public T choose(List<T> p) {
         if (p == null || p.size() ==0)  return null;
         if(p.size() == 1) return p.get(0);
         return p.get((index.getAndDecrement() & 0x7ffffff) % p.size());

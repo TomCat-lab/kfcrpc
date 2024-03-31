@@ -11,10 +11,10 @@ import java.util.Random;
  * Description: 随机轮询算法
  */
 
-public class RandomLoadBalancer implements LoadBalancer {
+public class RandomLoadBalancer<T> implements LoadBalancer<T> {
     Random r = new Random();
     @Override
-    public String choose(List<String> p) {
+    public T choose(List<T> p) {
         if (p == null || p.size() ==0)  return null;
         if(p.size() == 1) return p.get(0);
         return p.get(r.nextInt(p.size()));

@@ -2,6 +2,7 @@ package com.cola.kfcrpc.core.consumer;
 
 import com.cola.kfcrpc.core.annnotation.KfcConsumer;
 import com.cola.kfcrpc.core.api.LoadBalancer;
+import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.api.RpcContext;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         List<String> providers = Arrays.stream(providerUrl.split(",")).collect(Collectors.toList());
         Router router = applicationContext.getBean(Router.class);
         LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
+        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).build();
         for (String beanDefinitionName : beanDefinitionNames) {
             //todo filter package name
@@ -53,7 +55,8 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
                             Class<?> anInterface = f.getType();
                             String service = anInterface.getCanonicalName();
                             if (skeleton.get(service) == null){
-                                serviceImpl = createSkeleton(anInterface,rpcContext,providers);
+//                                serviceImpl = createSkeleton(anInterface,rpcContext,providers);
+                                serviceImpl = createFromRegistry(anInterface,rpcContext,rc);
                                 skeleton.put(service,serviceImpl);
                             }
                             f.setAccessible(true);
@@ -69,6 +72,12 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
                 );
             }
         }
+    }
+
+    private Object createFromRegistry(Class<?> anInterface, RpcContext rpcContext, RegistryCenter rc) {
+        String service = anInterface.getCanonicalName();
+        List<String> providers = rc.fetchAll(service);
+        return createSkeleton(anInterface,rpcContext,providers);
     }
 
     private Object createSkeleton(Class<?> service, RpcContext rpcContext, List<String> providers) {
