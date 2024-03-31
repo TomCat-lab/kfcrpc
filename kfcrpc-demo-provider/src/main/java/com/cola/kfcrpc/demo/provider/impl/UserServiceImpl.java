@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -58,6 +59,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Map<String, User>  getMap(Map<String, User> map) {
+        return map;
+    }
+
+    @Override
+    public List<User> getList(List<User> users) {
+        return users;
+    }
+
+    @Override
     public List<LinkedHashMap<String, String>> getIds(List<User> users) {
         List<LinkedHashMap<String,String>> map = new ArrayList<>();
         LinkedHashMap<String,String> res = new LinkedHashMap<>();
@@ -65,5 +76,31 @@ public class UserServiceImpl implements UserService {
         res.put("cola",user.getName());
         map.add(res);
         return map;
+    }
+
+    @Override
+    public Boolean getFlag(boolean flag) {
+        return !flag;
+    }
+
+    @Override
+    public User findById(long id) {
+        return new User("cola",Long.valueOf(id).intValue());
+    }
+
+    @Override
+    public User ex(boolean flag) {
+        if(flag) throw new RuntimeException("just throw an exception");
+        return new User("KFC100",100);
+    }
+
+    @Override
+    public User find(int timeout) {
+        return null;
+    }
+
+    @Override
+    public User[] findUsers(User[] users) {
+        return users;
     }
 }

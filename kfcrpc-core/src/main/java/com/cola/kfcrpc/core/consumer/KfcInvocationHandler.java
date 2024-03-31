@@ -36,11 +36,7 @@ public class KfcInvocationHandler implements InvocationHandler {
        RpcResponse<Object> result = post(rpcRequest);
        if (result.isSuccess()){
            Object data = result.getData();
-           if (data instanceof JSONObject j){
-               return j.toJavaObject(method.getReturnType());
-           }else {
-               return TypeUtils.convert(data,method,null);
-           }
+           return TypeUtils.convert(data,method,null);
        }else if (result.getEx() != null){
            throw new RuntimeException(result.getEx().getMessage());
        }

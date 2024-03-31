@@ -1,12 +1,10 @@
 package com.cola.kfcrpc.core.utils;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.util.ParameterizedTypeImpl;
+import com.alibaba.fastjson.JSONObject;
 
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class: TypeUtils
@@ -27,46 +25,75 @@ public class TypeUtils {
             returnType = paramType;
         }
 
-        if(returnType.isArray()) {
-            if(data instanceof List list) {
-                data = list.toArray();
-            }
-            int length = Array.getLength(data);
-            Class<?> componentType = returnType.getComponentType();
-            Object resultArray = Array.newInstance(componentType, length);
-            for (int i = 0; i < length; i++) {
-                if (componentType.isPrimitive() || componentType.getPackageName().startsWith("java")) {
-                    Array.set(resultArray, i, Array.get(data, i));
-                } else {
-                    Object castObject = convert(Array.get(data, i), componentType);
-                    Array.set(resultArray, i, castObject);
-                }
-            }
-            return resultArray;
-        }
 
-        // 如果data已经是正确的类型，直接返回
-//        if (returnType.isAssignableFrom(data.getClass())) {
-//            return data;
-//        }
 
-        return convert(data,returnType);
+        return convert(data,returnType,method.getGenericReturnType());
 
     }
 
     public static Object convert(Object data, Class<?> returnType,Type genericType) throws Exception {
+
         if (List.class.isAssignableFrom(returnType)) {
             List<?> dataList = (List<?>) data;
             List<Object> convertedList = new ArrayList<>();
             for (Object element : dataList) {
                 if (genericType instanceof  ParameterizedType g) {
                     String typeName = g.getActualTypeArguments()[0].getTypeName();
-                    Object convertedElement = convert(element,Class.forName(typeName));
+                    if (typeName.contains("<")){
+                        typeName = typeName.substring(0, typeName.indexOf("<"));
+                    }
+                    Object convertedElement = convert(element,Class.forName(typeName),g.getActualTypeArguments()[0]);
                     convertedList.add(convertedElement);
                 }
                 // 转换集合中的每个元素到指定的泛型类型
             }
             return convertedList;
+        }
+
+        if (data instanceof  JSONObject result){
+            if (Map.class.isAssignableFrom(returnType)){
+                HashMap<Object,Object> map = new HashMap<>();
+                if (genericType instanceof ParameterizedType type){
+                    Class<?> k = (Class<?>) type.getActualTypeArguments()[0];
+                    Class<?> v = (Class<?>) type.getActualTypeArguments()[1];
+
+                    result.entrySet().stream().forEach(r->{
+                        String key = r.getKey();
+                        Object value = r.getValue();
+                        try {
+                            Object convertK = convert(key, k);
+                            Object convertV = convert(value, v);
+                            map.put(convertK,convertV);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    });
+                }
+                return map;
+            }
+
+        }
+
+        if (returnType.isArray()){
+            if (data instanceof List list){
+                data =  list.toArray();
+            }
+
+            int length = Array.getLength(data);
+            Class<?> componentType = returnType.getComponentType();
+            Object instance = Array.newInstance(componentType, length);
+            for (int i = 0; i < length; i++) {
+                if (componentType.isPrimitive() || componentType.getPackageName().startsWith("java")){
+                    Array.set(instance,i,Array.get(data,i));
+                }else {
+                    Object converted = convert(Array.get(data, i), componentType);
+                    Array.set(instance,i,converted);
+                }
+            }
+
+            return instance;
+
         }
         return convert(data,returnType);
     }
@@ -110,6 +137,9 @@ public class TypeUtils {
             return result.toJavaObject(returnType);
         }
 
+        if (data instanceof JSONObject result){
+            return result.toJavaObject(returnType);
+        }
 
         // 如果不能转换，抛出异常或返回null
         throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
