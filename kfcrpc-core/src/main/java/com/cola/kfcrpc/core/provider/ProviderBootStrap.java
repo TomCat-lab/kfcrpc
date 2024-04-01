@@ -1,16 +1,22 @@
 package com.cola.kfcrpc.core.provider;
 
 import com.cola.kfcrpc.core.annnotation.KfcProvider;
+import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.meta.ProviderMeta;
 import com.cola.kfcrpc.core.utils.MethodUtils;
 import com.cola.kfcrpc.core.utils.TypeUtils;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.Data;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -18,19 +24,26 @@ import org.springframework.util.MultiValueMap;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Data
-public class ProviderBootStrap implements ApplicationContextAware {
+public class ProviderBootStrap implements ApplicationContextAware{
     ApplicationContext applicationContext;
-    private MultiValueMap<String,ProviderMeta> stub = new LinkedMultiValueMap<>();
+    private MultiValueMap<String,ProviderMeta> skeleton = new LinkedMultiValueMap<>();
+    RegistryCenter rc = null;
+    private String ip;
+    private String instance;
 
-   @PostConstruct
+    @Value("${server.port}")
+    private int port;
+    @SneakyThrows
+    @PostConstruct
    public void start(){
-
+        rc =applicationContext.getBean(RegistryCenter.class);
        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(KfcProvider.class);
        beansWithAnnotation.values().stream().forEach(
                x->{
@@ -45,17 +58,32 @@ public class ProviderBootStrap implements ApplicationContextAware {
                        providerMetas.add(providerMeta);
                    }
 
-                   stub.put(service,providerMetas);
+                   skeleton.put(service,providerMetas);
                }
        );
+       ip = InetAddress.getLocalHost().getHostAddress();
+       skeleton.keySet().forEach(this::registerService);
    }
 
-    public RpcResponse<Object> invoke(RpcRequest rpcRequest) {
+   @PreDestroy
+   public void stop(){
+        this.skeleton.keySet().forEach(this::unregisterService);
+   }
 
+    private void registerService(String service) {
+       instance = ip + "_" + port;
+       rc.register(service,instance);
+    }
+
+    private void unregisterService(String service){
+        rc.unRegister(service,instance);
+    }
+
+    public RpcResponse<Object> invoke(RpcRequest rpcRequest) {
         String service = rpcRequest.getService();
         Object[] params = rpcRequest.getArgs();
         String methodSign = rpcRequest.getMethodSign();
-        List<ProviderMeta> providerMetas = stub.get(service);
+        List<ProviderMeta> providerMetas = skeleton.get(service);
         if (CollectionUtils.isEmpty(providerMetas)){
             log.error("providerMetas is empty");
             return null;
