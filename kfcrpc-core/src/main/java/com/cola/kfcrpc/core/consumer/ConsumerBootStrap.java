@@ -27,12 +27,12 @@ import java.util.stream.Collectors;
 public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAware {
     Environment environment;
     ApplicationContext applicationContext;
-    Map<String, Object> skeleton = new HashMap<>();
+    Map<String, Object> stub = new HashMap<>();
     
     public void start(){
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
-        String providerUrl = environment.getProperty("kfcrpc.providers");
-        List<String> providers = Arrays.stream(providerUrl.split(",")).collect(Collectors.toList());
+//        String providerUrl = environment.getProperty("kfcrpc.providers");
+//        List<String> providers = Arrays.stream(providerUrl.split(",")).collect(Collectors.toList());
         Router router = applicationContext.getBean(Router.class);
         LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
@@ -54,10 +54,10 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
                             Object serviceImpl = null;
                             Class<?> anInterface = f.getType();
                             String service = anInterface.getCanonicalName();
-                            if (skeleton.get(service) == null){
+                            if (stub.get(service) == null){
 //                                serviceImpl = createSkeleton(anInterface,rpcContext,providers);
                                 serviceImpl = createFromRegistry(anInterface,rpcContext,rc);
-                                skeleton.put(service,serviceImpl);
+                                stub.put(service,serviceImpl);
                             }
                             f.setAccessible(true);
                             try {
@@ -74,11 +74,15 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         }
     }
 
+
     private Object createFromRegistry(Class<?> anInterface, RpcContext rpcContext, RegistryCenter rc) {
         String service = anInterface.getCanonicalName();
-        List<String> providers = rc.fetchAll(service);
+        List<String> providers = rc.fetchAll(service).stream().map(p -> {
+            return "http://" + p.replace("_", ":");
+        }).collect(Collectors.toList());
         return createSkeleton(anInterface,rpcContext,providers);
     }
+
 
     private Object createSkeleton(Class<?> service, RpcContext rpcContext, List<String> providers) {
         Object proxyImpl = Proxy.newProxyInstance(service.getClassLoader(), new Class[]{service}, new KfcInvocationHandler(service,rpcContext,providers));

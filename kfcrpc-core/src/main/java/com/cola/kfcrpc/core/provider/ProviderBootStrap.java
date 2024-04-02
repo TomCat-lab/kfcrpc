@@ -42,7 +42,7 @@ public class ProviderBootStrap implements ApplicationContextAware{
     private int port;
     @SneakyThrows
     @PostConstruct
-   public void start(){
+   public void init(){
         rc =applicationContext.getBean(RegistryCenter.class);
        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(KfcProvider.class);
        beansWithAnnotation.values().stream().forEach(
@@ -61,13 +61,24 @@ public class ProviderBootStrap implements ApplicationContextAware{
                    skeleton.put(service,providerMetas);
                }
        );
+
+       /*spring 上下文还没有完成，服务未必可用，但zk已经注册完了，这个时候调用服务，会导致服务不可用，
+        *需要延迟暴露服务
+        * */
+
+   }
+
+   @SneakyThrows
+   public void start(){
        ip = InetAddress.getLocalHost().getHostAddress();
+       instance = ip+"_"+port;
        skeleton.keySet().forEach(this::registerService);
    }
 
    @PreDestroy
    public void stop(){
         this.skeleton.keySet().forEach(this::unregisterService);
+        rc.stop();
    }
 
     private void registerService(String service) {

@@ -3,8 +3,8 @@ package com.cola.kfcrpc.core.consumer;
 import com.cola.kfcrpc.core.api.LoadBalancer;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
-import com.cola.kfcrpc.core.cluster.RandomLoadBalancer;
 import com.cola.kfcrpc.core.cluster.RoundRibbonLoadBalancer;
+import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class ConsumserConfig {
     ApplicationRunner run(@Autowired ConsumerBootStrap consumerBootStrap){
         return r->{
             consumerBootStrap.start();
-            log.info("消费者启动完成，代理存根大小：{}",consumerBootStrap.getSkeleton().values().size());
+            log.info("消费者启动完成，代理存根大小：{}",consumerBootStrap.getStub().values().size());
         };
     }
 
@@ -54,8 +54,8 @@ public class ConsumserConfig {
         return Router.Default;
     }
 
-    @Bean(initMethod = "start",destroyMethod = "stop")
-    RegistryCenter registryCenter(){
-        return new RegistryCenter.staticRegistryCenter(List.of(providers.split(",")));
+    @Bean(initMethod = "start")//destroyMethod = "stop")
+    RegistryCenter consumer_rc(){
+        return new ZkRegistryCenter();
     }
 }

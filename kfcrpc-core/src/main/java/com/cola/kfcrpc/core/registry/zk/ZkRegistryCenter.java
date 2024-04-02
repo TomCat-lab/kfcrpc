@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
+import java.util.Arrays;
 import java.util.List;
 @Slf4j
 public class ZkRegistryCenter implements RegistryCenter {
@@ -66,6 +67,13 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     @Override
     public List<String> fetchAll(String service) {
-        return null;
+        String servicePath = "/"+service;
+        try {
+            List<String> providers = client.getChildren().forPath(servicePath);
+            log.info("fetchAll:{}", providers);
+            return providers;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
