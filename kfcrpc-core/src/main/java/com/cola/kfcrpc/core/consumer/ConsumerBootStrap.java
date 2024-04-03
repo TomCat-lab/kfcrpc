@@ -5,7 +5,10 @@ import com.cola.kfcrpc.core.api.LoadBalancer;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.api.RpcContext;
+import com.cola.kfcrpc.core.registry.ChagedListener;
+import com.cola.kfcrpc.core.registry.Event;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
@@ -78,9 +81,20 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     private Object createFromRegistry(Class<?> anInterface, RpcContext rpcContext, RegistryCenter rc) {
         String service = anInterface.getCanonicalName();
         List<String> providers = rc.fetchAll(service).stream().map(p -> {
-            return "http://" + p.replace("_", ":");
+            return mapUrl(p);
         }).collect(Collectors.toList());
+
+        rc.subscribe(service, event -> {
+            providers.clear();
+            List<String> collect = event.getData().stream().map(p -> mapUrl(p)).collect(Collectors.toList());
+            providers.addAll(collect);
+        });
         return createSkeleton(anInterface,rpcContext,providers);
+    }
+
+    @NotNull
+    private static String mapUrl(String p) {
+        return "http://" + p.replace("_", ":");
     }
 
 

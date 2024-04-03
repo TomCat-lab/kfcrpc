@@ -1,5 +1,7 @@
 package com.cola.kfcrpc.core.api;
 
+import com.cola.kfcrpc.core.registry.ChagedListener;
+
 import java.util.List;
 
 /**
@@ -21,7 +23,7 @@ public interface RegistryCenter {
 
     List<String> fetchAll(String service);
 
-    // void subscribe();
+     void subscribe(String service,ChagedListener chagedListener);
 
     class staticRegistryCenter implements RegistryCenter{
 
@@ -54,6 +56,11 @@ public interface RegistryCenter {
         @Override
         public List<String> fetchAll(String service) {
             return providers;
+        }
+
+        @Override
+        public void subscribe(String service, ChagedListener chagedListener) {
+
         }
     }
 }

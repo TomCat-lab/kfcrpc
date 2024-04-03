@@ -1,19 +1,22 @@
 package com.cola.kfcrpc.core.registry.zk;
 
 import com.cola.kfcrpc.core.api.RegistryCenter;
+import com.cola.kfcrpc.core.registry.ChagedListener;
+import com.cola.kfcrpc.core.registry.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
-import java.util.Arrays;
 import java.util.List;
 @Slf4j
 public class ZkRegistryCenter implements RegistryCenter {
 
     private CuratorFramework client = null;
+    private  TreeCache treeCache;
 
     @Override
     public void start() {
@@ -31,6 +34,7 @@ public class ZkRegistryCenter implements RegistryCenter {
     @Override
     public void stop() {
         log.info("zk stop,namespace:{}","kfcrpc");
+        if (treeCache !=null) treeCache.close();
         client.close();
 
     }
@@ -65,6 +69,7 @@ public class ZkRegistryCenter implements RegistryCenter {
         }
     }
 
+
     @Override
     public List<String> fetchAll(String service) {
         String servicePath = "/"+service;
@@ -72,6 +77,21 @@ public class ZkRegistryCenter implements RegistryCenter {
             List<String> providers = client.getChildren().forPath(servicePath);
             log.info("fetchAll:{}", providers);
             return providers;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void subscribe(String service, ChagedListener chagedListener) {
+        String servicePath = "/"+service;
+        treeCache = TreeCache.newBuilder(client, servicePath).setCacheData(true).setMaxDepth(2).build();
+        try {
+            treeCache.getListenable().addListener((curator,event)->{
+                 log.info("subscribe:{}",event);
+                 chagedListener.fire(new Event(fetchAll(service)));
+            });
+            treeCache.start();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
