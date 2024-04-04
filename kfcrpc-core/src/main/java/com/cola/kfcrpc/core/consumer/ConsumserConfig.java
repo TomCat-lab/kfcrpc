@@ -4,6 +4,8 @@ import com.cola.kfcrpc.core.api.LoadBalancer;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.cluster.RoundRibbonLoadBalancer;
+import com.cola.kfcrpc.core.http.HttpInvoker;
+import com.cola.kfcrpc.core.http.OkHttpInvoker;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,11 @@ public class ConsumserConfig {
     @Bean
     public ConsumerBootStrap consumerBootStrap(){
         return new ConsumerBootStrap();
+    }
+
+    @Bean
+    HttpInvoker httpInvoker(){
+        return new OkHttpInvoker();
     }
     @Bean
     @Order(Integer.MIN_VALUE)

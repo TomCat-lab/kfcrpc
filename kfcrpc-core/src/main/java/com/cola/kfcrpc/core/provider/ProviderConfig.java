@@ -2,6 +2,7 @@ package com.cola.kfcrpc.core.provider;
 
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.consumer.ConsumerBootStrap;
+import com.cola.kfcrpc.core.http.HttpInvoker;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class ProviderConfig {
     public ProviderInvoker providerInvoke(@Autowired ProviderBootStrap providerBootStrap){
         return new ProviderInvoker(providerBootStrap);
     }
+
 
     @Bean
     @Order(Integer.MIN_VALUE)

@@ -7,6 +7,7 @@ import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.api.RpcContext;
 import com.cola.kfcrpc.core.registry.ChagedListener;
 import com.cola.kfcrpc.core.registry.Event;
+import com.cola.kfcrpc.core.utils.MethodUtils;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +16,7 @@ import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.*;
@@ -45,12 +47,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
             List<Field> fields = new ArrayList<>();
             Object bean = applicationContext.getBean(beanDefinitionName);
             if (!bean.getClass().getPackageName().contains("kfc") ) continue;
-            Arrays.stream(bean.getClass().getSuperclass().getDeclaredFields())
-                    .forEach(f->{
-                       if (f.isAnnotationPresent(KfcConsumer.class)){
-                           fields.add(f);
-                       }
-                    });
+            fields.addAll(MethodUtils.searchAnnotationFiled(bean.getClass(), KfcConsumer.class));
             if (!CollectionUtils.isEmpty(fields)){
                 fields.stream().forEach(
                         f->{
@@ -76,6 +73,8 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
             }
         }
     }
+
+
 
 
     private Object createFromRegistry(Class<?> anInterface, RpcContext rpcContext, RegistryCenter rc) {

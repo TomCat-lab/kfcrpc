@@ -1,6 +1,11 @@
 package com.cola.kfcrpc.core.utils;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class: MethodUtils
@@ -36,5 +41,19 @@ public class MethodUtils {
             System.out.printf("\n");
         }
 
+    }
+
+    public static List<Field> searchAnnotationFiled(Class<?>  clazz, Class<? extends Annotation> annotationClass) {
+        List<Field> fields = new ArrayList<>();
+        while (clazz != null) {
+            Arrays.stream(clazz.getDeclaredFields())
+                    .forEach(f -> {
+                        if (f.isAnnotationPresent(annotationClass)) {
+                            fields.add(f);
+                        }
+                    });
+          clazz = clazz.getSuperclass();
+        }
+        return fields;
     }
 }
