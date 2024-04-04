@@ -1,4 +1,10 @@
 server:
   port: 8082
 kfcrpc:
+  zkRoot: kfcrpc
+  zkServer: localhost:2181
   providers: http://localhost:8080/,http://localhost:8083/,http://localhost:8084/
+app:
+  id: p1
+  env: dev
+  namespace: public

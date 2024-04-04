@@ -6,11 +6,13 @@ import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.api.RpcContext;
 import com.cola.kfcrpc.core.meta.InstanceMeta;
+import com.cola.kfcrpc.core.meta.ServiceMeta;
 import com.cola.kfcrpc.core.registry.ChagedListener;
 import com.cola.kfcrpc.core.registry.Event;
 import com.cola.kfcrpc.core.utils.MethodUtils;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
@@ -34,6 +36,15 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     Environment environment;
     ApplicationContext applicationContext;
     Map<String, Object> stub = new HashMap<>();
+
+    @Value("${app.id}")
+    private String app;
+
+    @Value("${app.env}")
+    private String env;
+
+    @Value("${app.namespace}")
+    private String namespace;
     
     public void start(){
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
@@ -80,9 +91,10 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     private Object createFromRegistry(Class<?> anInterface, RpcContext rpcContext, RegistryCenter rc) {
         String service = anInterface.getCanonicalName();
-        List<InstanceMeta> providers = rc.fetchAll(service);
+        ServiceMeta serviceMeta = ServiceMeta.builder().app(app).env(env).namespace(namespace).name(service).build();
+        List<InstanceMeta> providers = rc.fetchAll(serviceMeta);
 
-        rc.subscribe(service, event -> {
+        rc.subscribe(serviceMeta, event -> {
             providers.clear();
             List<InstanceMeta> collect = event.getData();
             providers.addAll(collect);

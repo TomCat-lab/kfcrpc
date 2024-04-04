@@ -4,6 +4,7 @@ import com.cola.kfcrpc.core.annnotation.KfcProvider;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.meta.ProviderMeta;
+import com.cola.kfcrpc.core.meta.ServiceMeta;
 import com.cola.kfcrpc.core.utils.MethodUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -39,6 +40,15 @@ public class ProviderBootStrap implements ApplicationContextAware{
 
     @Value("${server.port}")
     private int port;
+
+    @Value("${app.id}")
+    private String app;
+
+    @Value("${app.env}")
+    private String env;
+
+    @Value("${app.namespace}")
+    private String namespace;
     @SneakyThrows
     @PostConstruct
    public void init(){
@@ -82,11 +92,13 @@ public class ProviderBootStrap implements ApplicationContextAware{
    }
 
     private void registerService(String service) {
-       rc.register(service,instance);
+        ServiceMeta serviceMeta = ServiceMeta.builder().app(app).env(env).namespace(namespace).name(service).build();
+        rc.register(serviceMeta,instance);
     }
 
     private void unregisterService(String service){
-        rc.unRegister(service,instance);
+        ServiceMeta serviceMeta = ServiceMeta.builder().app(app).env(env).namespace(namespace).name(service).build();
+        rc.unRegister(serviceMeta,instance);
     }
 
 

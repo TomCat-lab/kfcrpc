@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
  * Class: ProviderMeta
  * Author: cola
  * Date: 2024/3/30
- * Description:
+ * Description:描述服务提供者元数据
  */
 @Data
 @Builder

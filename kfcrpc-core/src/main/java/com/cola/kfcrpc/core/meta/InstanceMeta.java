@@ -4,6 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Map;
+/**
+ * Class: InstanceMeta
+ * Author: cola
+ * Date: 2024/4/4
+ * Description: 描述服务实例元数据
+ */
 
 @Data
 @AllArgsConstructor

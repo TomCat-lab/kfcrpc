@@ -1,6 +1,7 @@
 package com.cola.kfcrpc.core.api;
 
 import com.cola.kfcrpc.core.meta.InstanceMeta;
+import com.cola.kfcrpc.core.meta.ServiceMeta;
 import com.cola.kfcrpc.core.registry.ChagedListener;
 
 import java.util.List;
@@ -18,13 +19,13 @@ public interface RegistryCenter {
     void stop();
 
     // provider
-    void  register(String service,InstanceMeta instance);
+    void  register(ServiceMeta service,InstanceMeta instance);
 
-    void  unRegister(String service,InstanceMeta instance);
+    void  unRegister(ServiceMeta service,InstanceMeta instance);
 
-    List<InstanceMeta> fetchAll(String service);
+    List<InstanceMeta> fetchAll(ServiceMeta service);
 
-     void subscribe(String service,ChagedListener chagedListener);
+     void subscribe(ServiceMeta service,ChagedListener chagedListener);
 
     class staticRegistryCenter implements RegistryCenter{
 
@@ -45,22 +46,22 @@ public interface RegistryCenter {
         }
 
         @Override
-        public void register(String service, InstanceMeta instance) {
+        public void register(ServiceMeta service, InstanceMeta instance) {
 
         }
 
         @Override
-        public void unRegister(String service, InstanceMeta instance) {
+        public void unRegister(ServiceMeta service, InstanceMeta instance) {
 
         }
 
         @Override
-        public List<InstanceMeta> fetchAll(String service) {
+        public List<InstanceMeta> fetchAll(ServiceMeta service) {
             return providers;
         }
 
         @Override
-        public void subscribe(String service, ChagedListener chagedListener) {
+        public void subscribe(ServiceMeta service, ChagedListener chagedListener) {
 
         }
     }
