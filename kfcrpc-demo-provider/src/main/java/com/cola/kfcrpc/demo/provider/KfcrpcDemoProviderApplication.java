@@ -4,6 +4,7 @@ import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.provider.ProviderBootStrap;
 import com.cola.kfcrpc.core.provider.ProviderConfig;
+import com.cola.kfcrpc.core.provider.ProviderInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class KfcrpcDemoProviderApplication {
 
+//    @Autowired
+//    ProviderBootStrap providerBootStrap;
+
     @Autowired
-    ProviderBootStrap providerBootStrap;
+    ProviderInvoker providerInvoker;
 
 
     public static void main(String[] args) {
@@ -31,7 +35,7 @@ public class KfcrpcDemoProviderApplication {
         if (rpcRequest == null ) return null;
         if (ObjectUtils.isEmpty(rpcRequest.getService())) return null;
         if (ObjectUtils.isEmpty(rpcRequest.getMethodSign())) return null;
-        return  providerBootStrap.invoke(rpcRequest);
+        return  providerInvoker.invoke(rpcRequest);
     }
 
 

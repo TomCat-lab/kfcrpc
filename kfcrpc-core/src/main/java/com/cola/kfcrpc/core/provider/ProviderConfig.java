@@ -18,9 +18,14 @@ public class ProviderConfig {
         return new ProviderBootStrap();
     }
 
-    @Bean(initMethod = "start")
+    @Bean //(initMethod = "start")
     RegistryCenter provider_rc(){
         return new ZkRegistryCenter();
+    }
+
+    @Bean
+    public ProviderInvoker providerInvoke(@Autowired ProviderBootStrap providerBootStrap){
+        return new ProviderInvoker(providerBootStrap);
     }
 
     @Bean
