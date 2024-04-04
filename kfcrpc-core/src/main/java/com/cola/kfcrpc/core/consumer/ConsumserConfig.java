@@ -29,10 +29,6 @@ public class ConsumserConfig {
     }
 
     @Bean
-    HttpInvoker httpInvoker(){
-        return new OkHttpInvoker();
-    }
-    @Bean
     @Order(Integer.MIN_VALUE)
     ApplicationRunner run(@Autowired ConsumerBootStrap consumerBootStrap){
         return r->{

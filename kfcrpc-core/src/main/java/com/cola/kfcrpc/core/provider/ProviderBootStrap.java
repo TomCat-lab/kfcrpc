@@ -2,6 +2,7 @@ package com.cola.kfcrpc.core.provider;
 
 import com.cola.kfcrpc.core.annnotation.KfcProvider;
 import com.cola.kfcrpc.core.api.RegistryCenter;
+import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.meta.ProviderMeta;
 import com.cola.kfcrpc.core.utils.MethodUtils;
 import jakarta.annotation.PostConstruct;
@@ -34,7 +35,7 @@ public class ProviderBootStrap implements ApplicationContextAware{
     private MultiValueMap<String,ProviderMeta> skeleton = new LinkedMultiValueMap<>();
     RegistryCenter rc = null;
     private String ip;
-    private String instance;
+    private InstanceMeta instance;
 
     @Value("${server.port}")
     private int port;
@@ -69,9 +70,9 @@ public class ProviderBootStrap implements ApplicationContextAware{
    @SneakyThrows
    public void start(){
         rc.start();
-       ip = InetAddress.getLocalHost().getHostAddress();
-       instance = ip+"_"+port;
-       skeleton.keySet().forEach(this::registerService);
+        ip = InetAddress.getLocalHost().getHostAddress();
+        instance = InstanceMeta.toHttp(ip, port);
+        skeleton.keySet().forEach(this::registerService);
    }
 
    @PreDestroy
@@ -81,7 +82,6 @@ public class ProviderBootStrap implements ApplicationContextAware{
    }
 
     private void registerService(String service) {
-       instance = ip + "_" + port;
        rc.register(service,instance);
     }
 

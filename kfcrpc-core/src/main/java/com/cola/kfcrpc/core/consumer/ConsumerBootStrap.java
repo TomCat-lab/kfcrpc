@@ -5,6 +5,7 @@ import com.cola.kfcrpc.core.api.LoadBalancer;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.api.RpcContext;
+import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.registry.ChagedListener;
 import com.cola.kfcrpc.core.registry.Event;
 import com.cola.kfcrpc.core.utils.MethodUtils;
@@ -79,13 +80,11 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     private Object createFromRegistry(Class<?> anInterface, RpcContext rpcContext, RegistryCenter rc) {
         String service = anInterface.getCanonicalName();
-        List<String> providers = rc.fetchAll(service).stream().map(p -> {
-            return mapUrl(p);
-        }).collect(Collectors.toList());
+        List<InstanceMeta> providers = rc.fetchAll(service);
 
         rc.subscribe(service, event -> {
             providers.clear();
-            List<String> collect = event.getData().stream().map(p -> mapUrl(p)).collect(Collectors.toList());
+            List<InstanceMeta> collect = event.getData();
             providers.addAll(collect);
         });
         return createSkeleton(anInterface,rpcContext,providers);
@@ -97,7 +96,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     }
 
 
-    private Object createSkeleton(Class<?> service, RpcContext rpcContext, List<String> providers) {
+    private Object createSkeleton(Class<?> service, RpcContext rpcContext, List<InstanceMeta> providers) {
         Object proxyImpl = Proxy.newProxyInstance(service.getClassLoader(), new Class[]{service}, new KfcInvocationHandler(service,rpcContext,providers));
         return proxyImpl;
     }

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cola.kfcrpc.core.api.*;
 import com.cola.kfcrpc.core.http.HttpInvoker;
 import com.cola.kfcrpc.core.http.OkHttpInvoker;
+import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.utils.MethodUtils;
 import com.cola.kfcrpc.core.utils.TypeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +24,10 @@ public class KfcInvocationHandler implements InvocationHandler {
 
     private RpcContext rpcContext;
 
-    private List<String> providers;
+    private List<InstanceMeta> providers;
 
     HttpInvoker okHttpInvoker =new OkHttpInvoker();
-    public KfcInvocationHandler(Class<?> service, RpcContext rpcContext, List<String> providers) {
+    public KfcInvocationHandler(Class<?> service, RpcContext rpcContext, List<InstanceMeta> providers) {
         this.service = service;
         this.rpcContext = rpcContext;
         this.providers = providers;
@@ -44,10 +45,10 @@ public class KfcInvocationHandler implements InvocationHandler {
                 .build();
         Router router = rpcContext.getRouter();
         LoadBalancer loadBalancer = rpcContext.getLoadBalancer();
-        List<String> providers = router.route(this.providers);
-        String url = (String) loadBalancer.choose(providers);
-        log.info("loadBalancer.choose:{}",url);
-        RpcResponse<Object> result = okHttpInvoker.post(rpcRequest,url);
+        List<InstanceMeta> providers = router.route(this.providers);
+        InstanceMeta meta =  (InstanceMeta) loadBalancer.choose(providers);
+        log.info("loadBalancer.choose:{}",meta.toUrl());
+        RpcResponse<Object> result = okHttpInvoker.post(rpcRequest,meta.toUrl());
        if (result.isSuccess()){
            Object data = result.getData();
            return TypeUtils.convert(data,method,null);

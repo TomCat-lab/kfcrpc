@@ -1,6 +1,7 @@
 package com.cola.kfcrpc.core.registry.zk;
 
 import com.cola.kfcrpc.core.api.RegistryCenter;
+import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.registry.ChagedListener;
 import com.cola.kfcrpc.core.registry.Event;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,8 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 public class ZkRegistryCenter implements RegistryCenter {
 
@@ -40,13 +43,13 @@ public class ZkRegistryCenter implements RegistryCenter {
     }
 
     @Override
-    public void register(String service, String instance) {
+    public void register(String service, InstanceMeta instance) {
         String servicePath ="/"+service;
         try {
             if (client.checkExists().forPath(servicePath) == null){
                 client.create().withMode(CreateMode.PERSISTENT).forPath(servicePath,"serive".getBytes());
             }
-            String instancePath = servicePath +"/"+instance;
+            String instancePath = servicePath +"/"+instance.toPath();
             log.info("register to zk :{}",instancePath);
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath,"provider".getBytes());
         } catch (Exception e) {
@@ -55,15 +58,15 @@ public class ZkRegistryCenter implements RegistryCenter {
     }
 
     @Override
-    public void unRegister(String service, String instance) {
+    public void unRegister(String service, InstanceMeta instance) {
         String servicePath ="/"+service;
         try {
             if (client.checkExists().forPath(servicePath) == null){
               return;
             }
-            String instancePath = servicePath +"/"+instance;
+            String instancePath = servicePath +"/"+instance.toPath();
             log.info("unregister from zk :{}",instancePath);
-            client.delete().forPath(instancePath);
+            client.delete().quietly().forPath(instancePath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -71,15 +74,21 @@ public class ZkRegistryCenter implements RegistryCenter {
 
 
     @Override
-    public List<String> fetchAll(String service) {
+    public List<InstanceMeta> fetchAll(String service) {
         String servicePath = "/"+service;
         try {
-            List<String> providers = client.getChildren().forPath(servicePath);
+            List<InstanceMeta> providers = client.getChildren().forPath(servicePath)
+                    .stream().map(this::mapInstance).collect(Collectors.toList());
             log.info("fetchAll:{}", providers);
             return providers;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private InstanceMeta mapInstance(String node) {
+        String[] nodePart = node.split("_");
+        return InstanceMeta.toHttp(nodePart[0],Integer.valueOf(nodePart[1]));
     }
 
     @Override

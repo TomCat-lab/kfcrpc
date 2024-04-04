@@ -1,5 +1,6 @@
 package com.cola.kfcrpc.core.registry;
 
+import com.cola.kfcrpc.core.meta.InstanceMeta;
 import lombok.Data;
 
 import java.util.List;
@@ -7,9 +8,9 @@ import java.util.List;
 @Data
 public class Event {
 
-    public Event(List<String> data) {
+    public Event(List<InstanceMeta> data) {
         this.data = data;
     }
 
-    private List<String> data;
+    private List<InstanceMeta> data;
 }
