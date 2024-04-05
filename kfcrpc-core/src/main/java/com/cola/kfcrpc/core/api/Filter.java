@@ -7,4 +7,5 @@ package com.cola.kfcrpc.core.api;
  * Description: 过滤器
  */
 public interface Filter {
+
 }

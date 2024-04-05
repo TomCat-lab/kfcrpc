@@ -9,3 +9,8 @@ app:
 kfcrpc:
   zkRoot: kfcrpc
   zkServer: localhost:2181
+
+logging:
+  level:
+    root: info
+    com.cola.kfcrpc: debug
