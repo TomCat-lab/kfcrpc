@@ -1,9 +1,11 @@
 package com.cola.kfcrpc.core.consumer;
 
+import com.cola.kfcrpc.core.api.Filter;
 import com.cola.kfcrpc.core.api.LoadBalancer;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.cluster.RoundRibbonLoadBalancer;
+import com.cola.kfcrpc.core.filter.CacheFilter;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +58,10 @@ public class ConsumserConfig {
     @Bean(initMethod = "start")//destroyMethod = "stop")
     RegistryCenter consumer_rc(){
         return new ZkRegistryCenter();
+    }
+
+    @Bean
+    Filter filter(){
+        return new CacheFilter();
     }
 }

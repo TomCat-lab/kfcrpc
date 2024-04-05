@@ -15,7 +15,7 @@ import java.util.*;
 
 public class TypeUtils {
 
-    public static Object convert(Object data, Method method, Class<?> paramType) throws Exception {
+    public static Object convert(Object data, Method method, Class<?> paramType) throws RuntimeException {
         // 获取方法的返回类型
         if (data == null) return null;
         Class<?> returnType = null;
@@ -31,7 +31,7 @@ public class TypeUtils {
 
     }
 
-    public static Object convert(Object data, Class<?> returnType,Type genericType) throws Exception {
+    public static Object convert(Object data, Class<?> returnType,Type genericType) throws RuntimeException {
 
         if (List.class.isAssignableFrom(returnType)) {
             List<?> dataList = (List<?>) data;
@@ -42,7 +42,12 @@ public class TypeUtils {
                     if (typeName.contains("<")){
                         typeName = typeName.substring(0, typeName.indexOf("<"));
                     }
-                    Object convertedElement = convert(element,Class.forName(typeName),g.getActualTypeArguments()[0]);
+                    Object convertedElement = null;
+                    try {
+                        convertedElement = convert(element,Class.forName(typeName),g.getActualTypeArguments()[0]);
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                     convertedList.add(convertedElement);
                 }
                 // 转换集合中的每个元素到指定的泛型类型
@@ -98,7 +103,7 @@ public class TypeUtils {
         return convert(data,returnType);
     }
 
-    public static Object convert(Object data, Class<?> returnType) throws Exception{
+    public static Object convert(Object data, Class<?> returnType) throws RuntimeException{
         if (data == null) return null;
 
         if (returnType.isInstance(data)) return data;
@@ -123,13 +128,21 @@ public class TypeUtils {
         // 可以根据需要添加更多类型的转换
         //LinkedHashMap
         if (data instanceof LinkedHashMap<?,?> result ){
-            Object instance = returnType.newInstance();
-            for (Field field : instance.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                Object value = result.get(field.getName());
-                field.set(instance,value);
-                field.setAccessible(false);
+            Object instance = null;
+            try {
+                instance = returnType.newInstance();
+                for (Field field : instance.getClass().getDeclaredFields()) {
+                    field.setAccessible(true);
+                    Object value = result.get(field.getName());
+                    field.set(instance,value);
+                    field.setAccessible(false);
+                }
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
+
             return instance;
         }
 

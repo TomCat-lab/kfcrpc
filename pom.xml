@@ -9,7 +9,6 @@
     <packaging>pom</packaging>
     <description>kfcrpc</description>
     <properties>
-        <java.version>17</java.version>
         <spring.boot.version>3.2.4</spring.boot.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

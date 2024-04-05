@@ -8,4 +8,18 @@ package com.cola.kfcrpc.core.api;
  */
 public interface Filter {
 
+   Object prefilter(RpcRequest rpcRequest);
+    Object afterfilter(RpcRequest rpcRequest ,RpcResponse rpcResponse,Object data);
+
+    Filter Default = new Filter() {
+        @Override
+        public Object prefilter(RpcRequest rpcRequest) {
+            return null;
+        }
+
+        @Override
+        public Object afterfilter(RpcRequest rpcRequest, RpcResponse rpcResponse, Object data) {
+            return null;
+        }
+    };
 }

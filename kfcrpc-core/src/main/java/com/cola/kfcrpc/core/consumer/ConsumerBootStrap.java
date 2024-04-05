@@ -1,10 +1,7 @@
 package com.cola.kfcrpc.core.consumer;
 
 import com.cola.kfcrpc.core.annnotation.KfcConsumer;
-import com.cola.kfcrpc.core.api.LoadBalancer;
-import com.cola.kfcrpc.core.api.RegistryCenter;
-import com.cola.kfcrpc.core.api.Router;
-import com.cola.kfcrpc.core.api.RpcContext;
+import com.cola.kfcrpc.core.api.*;
 import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.meta.ServiceMeta;
 import com.cola.kfcrpc.core.registry.ChagedListener;
@@ -48,12 +45,11 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     
     public void start(){
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
-//        String providerUrl = environment.getProperty("kfcrpc.providers");
-//        List<String> providers = Arrays.stream(providerUrl.split(",")).collect(Collectors.toList());
         Router router = applicationContext.getBean(Router.class);
         LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
-        RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).build();
+        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().collect(Collectors.toList());
+        RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).filters(filters).build();
         for (String beanDefinitionName : beanDefinitionNames) {
             //todo filter package name
             List<Field> fields = new ArrayList<>();

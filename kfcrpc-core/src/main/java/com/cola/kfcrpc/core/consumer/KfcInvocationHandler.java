@@ -45,16 +45,32 @@ public class KfcInvocationHandler implements InvocationHandler {
                 .build();
         Router router = rpcContext.getRouter();
         LoadBalancer loadBalancer = rpcContext.getLoadBalancer();
+        List<Filter> filters = rpcContext.getFilters();
+        for (Filter filter : filters) {
+            Object preRes = filter.prefilter(rpcRequest);
+            log.info(filter.getClass().getName() + " ==> prefilter: " + preRes);
+            if (preRes != null) return preRes;
+        }
         List<InstanceMeta> providers = router.route(this.providers);
         InstanceMeta meta =  (InstanceMeta) loadBalancer.choose(providers);
         log.info("loadBalancer.choose:{}",meta.toUrl());
-        RpcResponse<Object> result = okHttpInvoker.post(rpcRequest,meta.toUrl());
-       if (result.isSuccess()){
-           Object data = result.getData();
-           return TypeUtils.convert(data,method,null);
-       }else if (result.getEx() != null){
-           throw new RuntimeException(result.getEx().getMessage());
-       }
+        RpcResponse<?> result = okHttpInvoker.post(rpcRequest,meta.toUrl());
+        Object data = postResult(result,method);
+        for (Filter filter : filters) {
+            data = filter.afterfilter(rpcRequest,result,data);
+            log.info(filter.getClass().getName() + " ==> afterfilter: " + data);
+        }
+
+        return data;
+    }
+
+    private Object postResult(RpcResponse<?> result,Method method) {
+        if (result.isSuccess()){
+            Object data = result.getData();
+            return TypeUtils.convert(data,method,null);
+        }else if (result.getEx() != null){
+            throw new RuntimeException(result.getEx().getMessage());
+        }
         return null;
     }
 
