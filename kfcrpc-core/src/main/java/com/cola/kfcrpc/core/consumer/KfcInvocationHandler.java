@@ -68,7 +68,7 @@ public class KfcInvocationHandler implements InvocationHandler {
         if (result.isSuccess()){
             return TypeUtils.convert(result.getData(),method,null);
         }else if (result.getEx() != null){
-            throw new RuntimeException(result.getEx().getMessage());
+            throw  result.getEx();
         }
         return null;
     }

@@ -1,0 +1,16 @@
+server:
+  port: 8083
+
+app:
+  id: p1
+  env: dev
+  namespace: public
+
+kfcrpc:
+  zkRoot: kfcrpc
+  zkServer: localhost:2181
+
+logging:
+  level:
+    root: info
+    com.cola.kfcrpc: debug

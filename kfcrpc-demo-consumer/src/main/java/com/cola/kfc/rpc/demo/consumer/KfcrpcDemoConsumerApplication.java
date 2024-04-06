@@ -1,6 +1,7 @@
 package com.cola.kfc.rpc.demo.consumer;
 
 import com.cola.kfcrpc.core.annnotation.KfcConsumer;
+import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.consumer.ConsumserConfig;
@@ -142,7 +143,7 @@ public class KfcrpcDemoConsumerApplication {
         try {
             User userEx = userService.ex(true);
             System.out.println(userEx);
-        } catch (RuntimeException e) {
+        } catch (RpcException e) {
             System.out.println(" ===> exception: " + e.getMessage());
         }
 

@@ -2,6 +2,7 @@ package com.cola.kfcrpc.core.http;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class OkHttpInvoker implements HttpInvoker{
             log.info("resStr:{}",requstStr);
             return JSON.parseObject(resStr,RpcResponse.class);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.cola.kfcrpc.core.provider;
 
+import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.meta.ProviderMeta;
@@ -40,9 +41,9 @@ public class ProviderInvoker {
             rpcResponse.setSuccess(true);
             return rpcResponse;
         } catch (InvocationTargetException e) {
-            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
+            rpcResponse.setEx(new RpcException(e.getTargetException().getMessage()));
         } catch (IllegalAccessException | IllegalArgumentException e) {
-            rpcResponse.setEx(new RuntimeException(e.getMessage()));
+            rpcResponse.setEx(new RpcException(e.getMessage()));
         }
         return rpcResponse;
     }

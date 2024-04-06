@@ -1,6 +1,7 @@
 package com.cola.kfcrpc.core.registry.zk;
 
 import com.cola.kfcrpc.core.api.RegistryCenter;
+import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.meta.ServiceMeta;
 import com.cola.kfcrpc.core.registry.ChagedListener;
@@ -60,7 +61,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info("register to zk :{}",instancePath);
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath,"provider".getBytes());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -75,7 +76,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info("unregister from zk :{}",instancePath);
             client.delete().quietly().forPath(instancePath);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -89,7 +90,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info("fetchAll:{}", providers);
             return providers;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -109,7 +110,7 @@ public class ZkRegistryCenter implements RegistryCenter {
             });
             treeCache.start();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RpcException(e);
         }
     }
 }

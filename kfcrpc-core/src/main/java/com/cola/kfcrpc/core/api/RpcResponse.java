@@ -6,5 +6,5 @@ import lombok.Data;
 public class RpcResponse<T> {
     T data;
     boolean success;
-    Exception ex;
+    RpcException ex;
 }
