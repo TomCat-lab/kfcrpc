@@ -1,4 +1,4 @@
-package com.cola.kfcrpc.core.http;
+package com.cola.kfcrpc.core.consumer.http;
 
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;

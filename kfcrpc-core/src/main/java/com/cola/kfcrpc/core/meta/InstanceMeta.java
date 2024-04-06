@@ -34,6 +34,8 @@ public class InstanceMeta {
         return new InstanceMeta("http", host, port, "");
     }
 
+
+
     public String toUrl() {
         return String.format("%s://%s:%d/",sceme,host,port);
     }

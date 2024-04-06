@@ -15,4 +15,8 @@ GET http://localhost:8082/mock404?id = 404
 GET http://localhost:8082/findById?id = 20
 
 #### findById -- test loadbalancer
-GET http://localhost:8082/find?timeout = 1000
+GET http://localhost:8082/find?timeout=1000
+
+### 通过8081调用接口 修改超时
+GET http://localhost:8084/ports?ports=8081,8083
+

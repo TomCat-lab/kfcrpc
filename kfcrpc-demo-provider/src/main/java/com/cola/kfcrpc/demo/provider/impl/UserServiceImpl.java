@@ -8,10 +8,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -101,17 +98,23 @@ public class UserServiceImpl implements UserService {
         return new User("KFC100",100);
     }
 
+    String timeoutPorts = "8081,8084";
+
     @Override
     public User find(int timeout) {
         String port = environment.getProperty("server.port");
-        if ("8083".equals(port)){
+        if(Arrays.stream(timeoutPorts.split(",")).anyMatch(port::equals)) {
             try {
-                Thread.sleep(Long.parseLong(port));
+                Thread.sleep(timeout);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-        return new User("no time out"+port,200);
+        return new User( "KFC1001-" + port,200);
+    }
+
+    public void setTimeoutPorts(String timeoutPorts) {
+        this.timeoutPorts = timeoutPorts;
     }
 
     @Override

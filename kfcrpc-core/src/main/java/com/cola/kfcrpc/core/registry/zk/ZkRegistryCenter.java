@@ -96,7 +96,9 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     private InstanceMeta mapInstance(String node) {
         String[] nodePart = node.split("_");
-        return InstanceMeta.toHttp(nodePart[0],Integer.valueOf(nodePart[1]));
+        InstanceMeta instanceMeta = InstanceMeta.toHttp(nodePart[0], Integer.valueOf(nodePart[1]));
+        instanceMeta.setStatus(true);
+        return instanceMeta;
     }
 
     @Override

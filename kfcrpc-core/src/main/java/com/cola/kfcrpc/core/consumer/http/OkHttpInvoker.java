@@ -1,4 +1,4 @@
-package com.cola.kfcrpc.core.http;
+package com.cola.kfcrpc.core.consumer.http;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

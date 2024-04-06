@@ -37,4 +37,6 @@ public interface UserService {
     User find(int timeout);
 
     User[] findUsers(User[] users);
+    void setTimeoutPorts(String timeoutPorts);
+
 }

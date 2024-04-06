@@ -5,6 +5,8 @@ import com.cola.kfcrpc.core.api.RpcResponse;
 import com.cola.kfcrpc.core.provider.ProviderBootStrap;
 import com.cola.kfcrpc.core.provider.ProviderConfig;
 import com.cola.kfcrpc.core.provider.ProviderInvoker;
+import com.cola.kfcrpc.demo.api.User;
+import com.cola.kfcrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,6 +28,9 @@ public class KfcrpcDemoProviderApplication {
     @Autowired
     ProviderInvoker providerInvoker;
 
+    @Autowired
+    UserService userService;
+
 
     public static void main(String[] args) {
         SpringApplication.run(KfcrpcDemoProviderApplication.class, args);
@@ -37,6 +42,17 @@ public class KfcrpcDemoProviderApplication {
         if (ObjectUtils.isEmpty(rpcRequest.getService())) return null;
         if (ObjectUtils.isEmpty(rpcRequest.getMethodSign())) return null;
         return  providerInvoker.invoke(rpcRequest);
+    }
+
+
+
+    @RequestMapping("/ports")
+    public RpcResponse<String> ports(@RequestParam("ports") String ports) {
+        userService.setTimeoutPorts(ports);
+        RpcResponse<String> response = new RpcResponse<>();
+        response.setSuccess(true);
+        response.setData("OK:" + ports);
+        return response;
     }
 
 

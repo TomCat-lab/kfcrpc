@@ -55,7 +55,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().collect(Collectors.toList());
-        RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).filters(filters).build();
+        RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).filters(filters).parameters(new HashMap<>()).build();
         rpcContext.getParameters().put("app.retries",String.valueOf(retries));
         rpcContext.getParameters().put("app.timeout",String.valueOf(timeout));
         for (String beanDefinitionName : beanDefinitionNames) {
