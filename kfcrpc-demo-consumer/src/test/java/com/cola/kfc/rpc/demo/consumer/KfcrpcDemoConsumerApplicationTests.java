@@ -1,4 +1,5 @@
 package com.cola.kfc.rpc.demo.consumer;
+import com.cola.kfcrpc.core.test.TestZkServer;
 import com.cola.kfcrpc.demo.provider.KfcrpcDemoProviderApplication;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
@@ -13,9 +14,12 @@ class KfcrpcDemoConsumerApplicationTests {
 
     static ApplicationContext context;
 
+    static TestZkServer testZkServer = new TestZkServer();
+
     @SneakyThrows
     @BeforeAll
     static void start(){
+        testZkServer.start();
         context = SpringApplication.run(KfcrpcDemoProviderApplication.class,
                 "server.port=8084");
     }
@@ -28,6 +32,7 @@ class KfcrpcDemoConsumerApplicationTests {
     @AfterAll
     static void stop(){
         SpringApplication.exit(context,()->1);
+        testZkServer.stop();
     }
 
 }
