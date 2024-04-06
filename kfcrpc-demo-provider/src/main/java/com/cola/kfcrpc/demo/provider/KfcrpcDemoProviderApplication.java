@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
@@ -37,6 +38,8 @@ public class KfcrpcDemoProviderApplication {
         if (ObjectUtils.isEmpty(rpcRequest.getMethodSign())) return null;
         return  providerInvoker.invoke(rpcRequest);
     }
+
+
 
 
 }

@@ -6,6 +6,7 @@ import com.cola.kfcrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -102,7 +103,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User find(int timeout) {
-        return null;
+        String port = environment.getProperty("server.port");
+        if ("8083".equals(port)){
+            try {
+                Thread.sleep(Long.parseLong(port));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return new User("no time out"+port,200);
     }
 
     @Override

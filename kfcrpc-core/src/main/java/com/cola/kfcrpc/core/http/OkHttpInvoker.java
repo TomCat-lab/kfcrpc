@@ -16,11 +16,11 @@ public class OkHttpInvoker implements HttpInvoker{
     MediaType mediaType = MediaType.parse("application/json");
     OkHttpClient client;
 
-    public OkHttpInvoker() {
+    public OkHttpInvoker(int timeout) {
         this.client = new OkHttpClient().newBuilder()
-                .connectTimeout(1_000, TimeUnit.MILLISECONDS)
-                .readTimeout(1_000,TimeUnit.MILLISECONDS)
-                .writeTimeout(1_000,TimeUnit.MILLISECONDS)
+                .connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                .readTimeout(timeout,TimeUnit.MILLISECONDS)
+                .writeTimeout(timeout,TimeUnit.MILLISECONDS)
                 .connectionPool(new ConnectionPool(16,60,TimeUnit.SECONDS))
                 .build();
     }

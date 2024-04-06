@@ -42,6 +42,12 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     @Value("${app.namespace}")
     private String namespace;
+
+    @Value("${app.retries}")
+    private int retries;
+
+    @Value("${app.timeout}")
+    private int timeout;
     
     public void start(){
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
@@ -50,6 +56,8 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().collect(Collectors.toList());
         RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).filters(filters).build();
+        rpcContext.getParameters().put("app.retries",String.valueOf(retries));
+        rpcContext.getParameters().put("app.timeout",String.valueOf(timeout));
         for (String beanDefinitionName : beanDefinitionNames) {
             //todo filter package name
             List<Field> fields = new ArrayList<>();

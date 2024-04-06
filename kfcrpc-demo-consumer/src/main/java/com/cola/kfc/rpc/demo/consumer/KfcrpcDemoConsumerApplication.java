@@ -14,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,11 @@ public class KfcrpcDemoConsumerApplication {
     public User findById(@RequestParam("id") Integer id){
        return userService.findById(id);
     }
+    @RequestMapping("/find")
+    public User find(@RequestParam("timeout") Integer timeout){
+        return  userService.find(timeout);
+    }
+
 
     @Bean
     ApplicationRunner runner(){

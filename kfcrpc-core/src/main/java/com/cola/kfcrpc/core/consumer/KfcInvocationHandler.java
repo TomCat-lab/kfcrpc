@@ -14,6 +14,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,11 +27,13 @@ public class KfcInvocationHandler implements InvocationHandler {
 
     private List<InstanceMeta> providers;
 
-    HttpInvoker okHttpInvoker =new OkHttpInvoker();
+    HttpInvoker okHttpInvoker =null;
     public KfcInvocationHandler(Class<?> service, RpcContext rpcContext, List<InstanceMeta> providers) {
         this.service = service;
         this.rpcContext = rpcContext;
         this.providers = providers;
+        okHttpInvoker =new OkHttpInvoker(Integer.valueOf(rpcContext.getParameters()
+                .getOrDefault("app.timeout","1000")));
     }
 
     @Override
@@ -46,22 +49,37 @@ public class KfcInvocationHandler implements InvocationHandler {
         Router router = rpcContext.getRouter();
         LoadBalancer loadBalancer = rpcContext.getLoadBalancer();
         List<Filter> filters = rpcContext.getFilters();
-        for (Filter filter : filters) {
-            Object preRes = filter.prefilter(rpcRequest);
-            log.info(filter.getClass().getName() + " ==> prefilter: " + preRes);
-            if (preRes != null) return preRes;
-        }
-        List<InstanceMeta> providers = router.route(this.providers);
-        InstanceMeta meta =  (InstanceMeta) loadBalancer.choose(providers);
-        log.info("loadBalancer.choose:{}",meta.toUrl());
-        RpcResponse<?> result = okHttpInvoker.post(rpcRequest,meta.toUrl());
-        Object data = castResult(result,method);
-        for (Filter filter : filters) {
-            data = filter.afterfilter(rpcRequest,result,data);
-            log.info(filter.getClass().getName() + " ==> afterfilter: " + data);
-        }
 
-        return data;
+        Integer retryConunt = Integer.valueOf(rpcContext.getParameters()
+                .getOrDefault("app.retries","1"));
+        while (retryConunt -- >0) {
+            try {
+                for (Filter filter : filters) {
+                    Object preRes = filter.prefilter(rpcRequest);
+                    log.info(filter.getClass().getName() + " ==> prefilter: " + preRes);
+                    if (preRes != null) return preRes;
+                }
+                List<InstanceMeta> providers = router.route(this.providers);
+                InstanceMeta meta = (InstanceMeta) loadBalancer.choose(providers);
+                log.info("loadBalancer.choose:{}", meta.toUrl());
+                RpcResponse<?> result = okHttpInvoker.post(rpcRequest, meta.toUrl());
+                Object data = castResult(result, method);
+                for (Filter filter : filters) {
+                    data = filter.afterfilter(rpcRequest, result, data);
+                    log.info(filter.getClass().getName() + " ==> afterfilter: " + data);
+                }
+                return data;
+            }catch (RpcException e){
+                int retryTotal = 0;
+                log.error("total retry:{}",retryTotal+1);
+                if (!(e.getCause() instanceof SocketTimeoutException)){
+                   throw e;
+                }
+            }
+
+        }
+        return null;
+
     }
 
     private Object castResult(RpcResponse<?> result,Method method) {

@@ -8,3 +8,5 @@ app:
   id: p1
   env: dev
   namespace: public
+  retries: 2
+  timeout: 1_000
