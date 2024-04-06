@@ -55,7 +55,7 @@ public class KfcInvocationHandler implements InvocationHandler {
         InstanceMeta meta =  (InstanceMeta) loadBalancer.choose(providers);
         log.info("loadBalancer.choose:{}",meta.toUrl());
         RpcResponse<?> result = okHttpInvoker.post(rpcRequest,meta.toUrl());
-        Object data = postResult(result,method);
+        Object data = castResult(result,method);
         for (Filter filter : filters) {
             data = filter.afterfilter(rpcRequest,result,data);
             log.info(filter.getClass().getName() + " ==> afterfilter: " + data);
@@ -64,10 +64,9 @@ public class KfcInvocationHandler implements InvocationHandler {
         return data;
     }
 
-    private Object postResult(RpcResponse<?> result,Method method) {
+    private Object castResult(RpcResponse<?> result,Method method) {
         if (result.isSuccess()){
-            Object data = result.getData();
-            return TypeUtils.convert(data,method,null);
+            return TypeUtils.convert(result.getData(),method,null);
         }else if (result.getEx() != null){
             throw new RuntimeException(result.getEx().getMessage());
         }
