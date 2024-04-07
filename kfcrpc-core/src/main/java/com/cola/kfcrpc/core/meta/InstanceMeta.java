@@ -32,7 +32,7 @@ public class InstanceMeta {
     }
 
     public static InstanceMeta toHttp(String host,Integer port) {
-        return new InstanceMeta("http", host, port, "");
+        return new InstanceMeta("http", host, port, "kfcrpc");
     }
 
 
