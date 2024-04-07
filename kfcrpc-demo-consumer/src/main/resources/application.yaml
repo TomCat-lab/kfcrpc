@@ -11,3 +11,4 @@ app:
   retries: 2
 #  超时设置的漏斗原则 ：A-B-C 依次递减 A 2000 B 1500 C 1000
   timeout: 1000
+  grayRatio: 10

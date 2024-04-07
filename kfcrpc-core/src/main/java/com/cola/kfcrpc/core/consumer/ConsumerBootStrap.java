@@ -48,6 +48,9 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     @Value("${app.timeout}")
     private int timeout;
+
+    @Value("${app.grayRatio}")
+    private int grayRatio;
     
     public void start(){
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
@@ -58,6 +61,7 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
         RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).filters(filters).parameters(new HashMap<>()).build();
         rpcContext.getParameters().put("app.retries",String.valueOf(retries));
         rpcContext.getParameters().put("app.timeout",String.valueOf(timeout));
+        rpcContext.getParameters().put("app.grayRatio",String.valueOf(grayRatio));
         for (String beanDefinitionName : beanDefinitionNames) {
             //todo filter package name
             List<Field> fields = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.cola.kfcrpc.core.registry.zk;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.meta.InstanceMeta;
@@ -15,6 +16,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,11 +57,11 @@ public class ZkRegistryCenter implements RegistryCenter {
         String servicePath ="/"+service.toPath();
         try {
             if (client.checkExists().forPath(servicePath) == null){
-                client.create().withMode(CreateMode.PERSISTENT).forPath(servicePath,"serive".getBytes());
+                client.create().withMode(CreateMode.PERSISTENT).forPath(servicePath,service.toMetas().getBytes());
             }
             String instancePath = servicePath +"/"+instance.toPath();
             log.info("register to zk :{}",instancePath);
-            client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath,"provider".getBytes());
+            client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath,instance.toMetas().getBytes());
         } catch (Exception e) {
             throw new RpcException(e);
         }
@@ -86,7 +88,7 @@ public class ZkRegistryCenter implements RegistryCenter {
         String servicePath = "/"+service.toPath();
         try {
             List<InstanceMeta> providers = client.getChildren().forPath(servicePath)
-                    .stream().map(this::mapInstance).collect(Collectors.toList());
+                    .stream().map(p->mapInstance(p,servicePath)).collect(Collectors.toList());
             log.info("fetchAll:{}", providers);
             return providers;
         } catch (Exception e) {
@@ -94,9 +96,17 @@ public class ZkRegistryCenter implements RegistryCenter {
         }
     }
 
-    private InstanceMeta mapInstance(String node) {
+    private InstanceMeta mapInstance(String node,String servicePath)  {
         String[] nodePart = node.split("_");
         InstanceMeta instanceMeta = InstanceMeta.toHttp(nodePart[0], Integer.valueOf(nodePart[1]));
+        try {
+            byte[] bytes = client.getData().forPath(servicePath + "/" + node);
+            HashMap<String,String> paramers = JSONObject.parseObject(new String(bytes), HashMap.class);
+            paramers.forEach((k,v)->{log.info("k:{},V:{}",k,v);});
+            instanceMeta.setParameters(paramers);
+        } catch (Exception e) {
+            throw new RpcException(e);
+        }
         instanceMeta.setStatus(true);
         return instanceMeta;
     }

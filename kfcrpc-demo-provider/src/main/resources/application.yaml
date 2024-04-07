@@ -6,6 +6,11 @@ app:
   env: dev
   namespace: public
 
+provider:
+   metas:
+     dc: bj
+     gray: false
+     unit: 8081
 kfcrpc:
   zkRoot: kfcrpc
   zkServer: localhost:2181

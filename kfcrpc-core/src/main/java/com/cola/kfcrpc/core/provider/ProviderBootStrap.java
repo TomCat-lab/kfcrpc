@@ -2,6 +2,7 @@ package com.cola.kfcrpc.core.provider;
 
 import com.cola.kfcrpc.core.annnotation.KfcProvider;
 import com.cola.kfcrpc.core.api.RegistryCenter;
+import com.cola.kfcrpc.core.config.ProviderProperties;
 import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.meta.ProviderMeta;
 import com.cola.kfcrpc.core.meta.ServiceMeta;
@@ -49,6 +50,13 @@ public class ProviderBootStrap implements ApplicationContextAware{
 
     @Value("${app.namespace}")
     private String namespace;
+
+    ProviderProperties providerProperties;
+
+    public ProviderBootStrap(ProviderProperties providerProperties) {
+        this.providerProperties = providerProperties;
+    }
+
     @SneakyThrows
     @PostConstruct
    public void init(){
@@ -82,6 +90,7 @@ public class ProviderBootStrap implements ApplicationContextAware{
         rc.start();
         ip = InetAddress.getLocalHost().getHostAddress();
         instance = InstanceMeta.toHttp(ip, port);
+        instance.setParameters(providerProperties.getMetas());
         skeleton.keySet().forEach(this::registerService);
    }
 

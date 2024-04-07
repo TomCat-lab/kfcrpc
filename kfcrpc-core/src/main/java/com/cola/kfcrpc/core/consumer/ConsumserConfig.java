@@ -6,6 +6,7 @@ import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.cluster.RoundRibbonLoadBalancer;
 import com.cola.kfcrpc.core.filter.CacheFilter;
+import com.cola.kfcrpc.core.gray.GrayRatioRouter;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ConsumserConfig {
 
     @Value("${kfcrpc.providers}")
     String providers;
+
+    @Value("${app.grayRatio}")
+    private int grayRatio;
     @Bean
     public ConsumerBootStrap consumerBootStrap(){
         return new ConsumerBootStrap();
@@ -50,10 +54,10 @@ public class ConsumserConfig {
         return new RoundRibbonLoadBalancer();
     }
 
-    @Bean
-    Router router(){
-        return Router.Default;
-    }
+//    @Bean
+//    Router router(){
+//        return Router.Default;
+//    }
 
     @Bean(initMethod = "start")//destroyMethod = "stop")
     RegistryCenter consumer_rc(){
@@ -64,4 +68,9 @@ public class ConsumserConfig {
 //    Filter filter(){
 //        return new CacheFilter();
 //    }
+
+    @Bean
+    Router grayRatioRouter(){
+        return new GrayRatioRouter((grayRatio));
+    }
 }

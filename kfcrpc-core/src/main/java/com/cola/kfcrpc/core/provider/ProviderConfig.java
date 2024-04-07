@@ -1,20 +1,26 @@
 package com.cola.kfcrpc.core.provider;
 
 import com.cola.kfcrpc.core.api.RegistryCenter;
+import com.cola.kfcrpc.core.config.ProviderProperties;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 
 @Configuration
+@Import(ProviderProperties.class)
 @Slf4j
 public class ProviderConfig {
+
+    @Autowired
+    ProviderProperties providerProperties;
     @Bean
     public ProviderBootStrap providerBootStrap(){
-        return new ProviderBootStrap();
+        return new ProviderBootStrap(providerProperties);
     }
 
     @Bean //(initMethod = "start")

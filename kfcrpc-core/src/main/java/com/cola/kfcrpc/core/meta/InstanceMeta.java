@@ -1,5 +1,6 @@
 package com.cola.kfcrpc.core.meta;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -38,6 +39,10 @@ public class InstanceMeta {
 
     public String toUrl() {
         return String.format("%s://%s:%d/",sceme,host,port);
+    }
+
+    public String toMetas(){
+        return JSON.toJSONString(parameters);
     }
 
 

@@ -1,8 +1,11 @@
 package com.cola.kfcrpc.core.meta;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 /**
  * Class: ServiceMeta
@@ -21,7 +24,12 @@ public class ServiceMeta {
 
     private String name ; // service name
 
+    private Map<String,String> parameters;
     public String toPath() {
         return String.format("%s_%s_%s_%s", app, namespace, env, name);
+    }
+
+    public String toMetas(){
+        return JSON.toJSONString(parameters);
     }
 }
