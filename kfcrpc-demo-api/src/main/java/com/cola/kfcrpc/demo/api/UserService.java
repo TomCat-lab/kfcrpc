@@ -39,4 +39,5 @@ public interface UserService {
     User[] findUsers(User[] users);
     void setTimeoutPorts(String timeoutPorts);
 
+    String echoParameter(String keyVersion);
 }

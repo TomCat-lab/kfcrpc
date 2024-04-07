@@ -1,5 +1,6 @@
 package com.cola.kfcrpc.core.provider;
 
+import com.cola.kfcrpc.core.api.RpcContext;
 import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
@@ -13,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class ProviderInvoker {
@@ -27,6 +29,8 @@ public class ProviderInvoker {
         String service = rpcRequest.getService();
         Object[] params = rpcRequest.getArgs();
         String methodSign = rpcRequest.getMethodSign();
+        Map<String, String> contextParams = rpcRequest.getParams();
+        RpcContext.ContextParameters.set(contextParams);
         List<ProviderMeta> providerMetas = skeleton.get(service);
         if (CollectionUtils.isEmpty(providerMetas)){
             log.error("providerMetas is empty");

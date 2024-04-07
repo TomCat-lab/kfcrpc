@@ -1,4 +1,4 @@
-package com.cola.kfcrpc.core.gray;
+package com.cola.kfcrpc.core.cluster;
 
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.meta.InstanceMeta;

@@ -5,8 +5,8 @@ import com.cola.kfcrpc.core.api.LoadBalancer;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.api.Router;
 import com.cola.kfcrpc.core.cluster.RoundRibbonLoadBalancer;
-import com.cola.kfcrpc.core.filter.CacheFilter;
-import com.cola.kfcrpc.core.gray.GrayRatioRouter;
+import com.cola.kfcrpc.core.cluster.GrayRatioRouter;
+import com.cola.kfcrpc.core.filter.ParamerFilter;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +64,10 @@ public class ConsumserConfig {
         return new ZkRegistryCenter();
     }
 
-//    @Bean
-//    Filter filter(){
-//        return new CacheFilter();
-//    }
+    @Bean
+    Filter filter(){
+        return new ParamerFilter();
+    }
 
     @Bean
     Router grayRatioRouter(){

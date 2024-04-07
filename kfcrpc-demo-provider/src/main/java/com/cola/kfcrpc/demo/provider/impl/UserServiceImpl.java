@@ -1,12 +1,12 @@
 package com.cola.kfcrpc.demo.provider.impl;
 
 import com.cola.kfcrpc.core.annnotation.KfcProvider;
+import com.cola.kfcrpc.core.api.RpcContext;
 import com.cola.kfcrpc.demo.api.User;
 import com.cola.kfcrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -120,5 +120,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User[] findUsers(User[] users) {
         return users;
+    }
+
+    @Override
+    public String echoParameter(String key) {
+        System.out.println(" ====>> RpcContext.ContextParameters: ");
+        RpcContext.ContextParameters.get().forEach((k, v)-> System.out.println(k+" -> " +v));
+        return RpcContext.getContextParameter(key);
     }
 }

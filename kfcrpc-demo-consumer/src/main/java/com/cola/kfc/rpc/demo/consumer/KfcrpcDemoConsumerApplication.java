@@ -1,6 +1,7 @@
 package com.cola.kfc.rpc.demo.consumer;
 
 import com.cola.kfcrpc.core.annnotation.KfcConsumer;
+import com.cola.kfcrpc.core.api.RpcContext;
 import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
@@ -62,7 +63,7 @@ public class KfcrpcDemoConsumerApplication {
 
     private void testAll() {
 
-        System.out.println("Case 1. >>===[常规int类型，返回User对象]===");
+       System.out.println("Case 1. >>===[常规int类型，返回User对象]===");
         User user = userService.findById(20);
         log.info("RPC result userService.findById(1):{}",user);
 //        System.out.printf("user:{}", userService.toString());
@@ -161,6 +162,18 @@ public class KfcrpcDemoConsumerApplication {
         userService.find(1100);
         System.out.println("userService.find take "
                 + (System.currentTimeMillis()-start) + " ms");
+
+        System.out.println("Case 20. >>===[测试通过Context跨消费者和提供者进行传参]===");
+        String Key_Version = "rpc.version";
+        String Key_Message = "rpc.message";
+        RpcContext.setContexParameter(Key_Version, "v8");
+        RpcContext.setContexParameter(Key_Message, "this is a test message");
+        String version = userService.echoParameter(Key_Version);
+        String message = userService.echoParameter(Key_Message);
+        System.out.println(" ===> echo parameter from c->p->c: " + Key_Version + " -> " + version);
+        System.out.println(" ===> echo parameter from c->p->c: " + Key_Message + " -> " + message);
+        RpcContext.ContextParameters.get().clear();
+
     }
 
 }
