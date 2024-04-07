@@ -3,6 +3,7 @@ package com.cola.kfcrpc.core.provider;
 import com.cola.kfcrpc.core.api.RegistryCenter;
 import com.cola.kfcrpc.core.config.ProviderProperties;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
+import com.cola.kfcrpc.core.transport.KfcRpcTransport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 
 @Configuration
-@Import(ProviderProperties.class)
+@Import({ProviderProperties.class, KfcRpcTransport.class})
 @Slf4j
 public class ProviderConfig {
 
