@@ -26,7 +26,7 @@ public class ConsumserConfig {
     @Value("${kfcrpc.providers}")
     String providers;
 
-    @Value("${app.grayRatio}")
+//    @Value("${app.grayRatio}")
     private int grayRatio;
     @Autowired
     private AppConfigProperties appConfigProperties;
@@ -80,7 +80,7 @@ public class ConsumserConfig {
 
     @Bean
     Router grayRatioRouter(){
-        return new GrayRatioRouter((grayRatio));
+        return new GrayRatioRouter((consumerConfigProperties.getGrayRatio()));
     }
 
     @Bean

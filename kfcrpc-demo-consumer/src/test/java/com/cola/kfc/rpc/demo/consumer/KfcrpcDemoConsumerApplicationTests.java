@@ -9,20 +9,55 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootTest
+@SpringBootTest(classes = KfcrpcDemoConsumerApplication.class)
 class KfcrpcDemoConsumerApplicationTests {
-
-    static ApplicationContext context;
 
     static TestZkServer testZkServer = new TestZkServer();
 
-    @SneakyThrows
+
+    static ApplicationContext context1;
+    static ApplicationContext context2;
+
+
     @BeforeAll
-    static void start(){
+    public static void start(){
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" =============     ZK2182    ========== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
         testZkServer.start();
-        context = SpringApplication.run(KfcrpcDemoProviderApplication.class,
-                "server.port=8084");
+
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" =============      P8094    ========== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        context1 = SpringApplication.run(KfcrpcDemoProviderApplication.class,
+                "--server.port=8094",
+                "--kfcrpc.zk.server=localhost:2182",
+                "--kfcrpc.app.env=test",
+                "--logging.level.com.cola.kfcrpc=info",
+                "--kfcrpc.provider.metas.dc=bj",
+                "--kfcrpc.provider.metas.gray=false",
+                "--kfcrpc.provider.metas.unit=B001"
+        );
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" =============      P8095    ========== ");
+        System.out.println(" ====================================== ");
+        System.out.println(" ====================================== ");
+        context2 = SpringApplication.run(KfcrpcDemoProviderApplication.class,
+                "--server.port=8095",
+                "--kfcrpc.zk.server=localhost:2182",
+                "--kfcrpc.app.env=test",
+                "--logging.level.com.cola.kfcrpc=info",
+                "--kfcrpc.provider.metas.dc=bj",
+                "--kfcrpc.provider.metas.gray=false",
+                "--kfcrpc.provider.metas.unit=B002"
+        );
     }
+
 
     @Test
     void contextLoads() {
@@ -31,7 +66,8 @@ class KfcrpcDemoConsumerApplicationTests {
 
     @AfterAll
     static void stop(){
-        SpringApplication.exit(context,()->1);
+        SpringApplication.exit(context1,()->1);
+        SpringApplication.exit(context2,()->1);
         testZkServer.stop();
     }
 
