@@ -2,6 +2,7 @@ package com.cola.kfcrpc.core.api;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,9 @@ public class RpcContext {
            return new HashMap<String,String>();
        }
     };
-
+    public String param(String key) {
+        return parameters.get(key);
+    }
     public static void setContexParameter(String key,String value){
         ContextParameters.get().put(key,value);
     }

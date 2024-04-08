@@ -34,34 +34,35 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
     ApplicationContext applicationContext;
     Map<String, Object> stub = new HashMap<>();
 
-    @Value("${app.id}")
-    private String app;
-
-    @Value("${app.env}")
-    private String env;
-
-    @Value("${app.namespace}")
-    private String namespace;
-
-    @Value("${app.retries}")
-    private int retries;
-
-    @Value("${app.timeout}")
-    private int timeout;
-
-    @Value("${app.grayRatio}")
-    private int grayRatio;
+//    @Value("${app.id}")
+//    private String app;
+//
+//    @Value("${app.env}")
+//    private String env;
+//
+//    @Value("${app.namespace}")
+//    private String namespace;
+//
+//    @Value("${app.retries}")
+//    private int retries;
+//
+//    @Value("${app.timeout}")
+//    private int timeout;
+//
+//    @Value("${app.grayRatio}")
+//    private int grayRatio;
     
     public void start(){
         String[] beanDefinitionNames = applicationContext.getBeanDefinitionNames();
-        Router router = applicationContext.getBean(Router.class);
-        LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
+//        Router router = applicationContext.getBean(Router.class);
+//        LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
-        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().collect(Collectors.toList());
-        RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).filters(filters).parameters(new HashMap<>()).build();
-        rpcContext.getParameters().put("app.retries",String.valueOf(retries));
-        rpcContext.getParameters().put("app.timeout",String.valueOf(timeout));
-        rpcContext.getParameters().put("app.grayRatio",String.valueOf(grayRatio));
+        RpcContext rpcContext = applicationContext.getBean(RpcContext.class);
+//        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().collect(Collectors.toList());
+//        RpcContext rpcContext = RpcContext.builder().loadBalancer(loadBalancer).router(router).filters(filters).parameters(new HashMap<>()).build();
+//        rpcContext.getParameters().put("app.retries",String.valueOf(retries));
+//        rpcContext.getParameters().put("app.timeout",String.valueOf(timeout));
+//        rpcContext.getParameters().put("app.grayRatio",String.valueOf(grayRatio));
         for (String beanDefinitionName : beanDefinitionNames) {
             //todo filter package name
             List<Field> fields = new ArrayList<>();
@@ -99,7 +100,8 @@ public class ConsumerBootStrap implements ApplicationContextAware, EnvironmentAw
 
     private Object createFromRegistry(Class<?> anInterface, RpcContext rpcContext, RegistryCenter rc) {
         String service = anInterface.getCanonicalName();
-        ServiceMeta serviceMeta = ServiceMeta.builder().app(app).env(env).namespace(namespace).name(service).build();
+        ServiceMeta serviceMeta = ServiceMeta.builder().app(rpcContext.param("app.id"))
+                .env(rpcContext.param("app.env")).namespace(rpcContext.param("app.namespace")).name(service).build();
         List<InstanceMeta> providers = rc.fetchAll(serviceMeta);
 
         rc.subscribe(serviceMeta, event -> {

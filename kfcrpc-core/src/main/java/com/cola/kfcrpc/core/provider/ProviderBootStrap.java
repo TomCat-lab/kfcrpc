@@ -2,6 +2,7 @@ package com.cola.kfcrpc.core.provider;
 
 import com.cola.kfcrpc.core.annnotation.KfcProvider;
 import com.cola.kfcrpc.core.api.RegistryCenter;
+import com.cola.kfcrpc.core.config.AppConfigProperties;
 import com.cola.kfcrpc.core.config.ProviderProperties;
 import com.cola.kfcrpc.core.meta.InstanceMeta;
 import com.cola.kfcrpc.core.meta.ProviderMeta;
@@ -39,22 +40,29 @@ public class ProviderBootStrap implements ApplicationContextAware{
     private String ip;
     private InstanceMeta instance;
 
-    @Value("${server.port}")
+//    @Value("${server.port}")
     private int port;
 
-    @Value("${app.id}")
+//    @Value("${app.id}")
     private String app;
 
-    @Value("${app.env}")
+//    @Value("${app.env}")
     private String env;
 
-    @Value("${app.namespace}")
+//    @Value("${app.namespace}")
     private String namespace;
 
     ProviderProperties providerProperties;
 
-    public ProviderBootStrap(ProviderProperties providerProperties) {
+    AppConfigProperties appConfigProperties;
+
+    public ProviderBootStrap(int port, ProviderProperties providerProperties, AppConfigProperties appConfigProperties) {
+        this.port = port;
         this.providerProperties = providerProperties;
+        this.appConfigProperties = appConfigProperties;
+        this.app = appConfigProperties.getId();
+        this.namespace = appConfigProperties.getNamespace();
+        this.env = appConfigProperties.getEnv();
     }
 
     @SneakyThrows

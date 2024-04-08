@@ -2,11 +2,8 @@ package com.cola.kfcrpc.demo.provider;
 
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
-import com.cola.kfcrpc.core.provider.ProviderBootStrap;
-import com.cola.kfcrpc.core.provider.ProviderConfig;
-import com.cola.kfcrpc.core.provider.ProviderInvoker;
+import com.cola.kfcrpc.core.config.ProviderConfig;
 import com.cola.kfcrpc.core.transport.KfcRpcTransport;
-import com.cola.kfcrpc.demo.api.User;
 import com.cola.kfcrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;

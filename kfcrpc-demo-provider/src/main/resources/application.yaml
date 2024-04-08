@@ -5,15 +5,15 @@ app:
   id: p1
   env: dev
   namespace: public
-
-provider:
+kfcrpc:
+  zkRoot: kfcrpc
+  zkServer: localhost:2181
+  provider:
    metas:
      dc: bj
      gray: false
      unit: 8081
-kfcrpc:
-  zkRoot: kfcrpc
-  zkServer: localhost:2181
+
 
 logging:
   level:

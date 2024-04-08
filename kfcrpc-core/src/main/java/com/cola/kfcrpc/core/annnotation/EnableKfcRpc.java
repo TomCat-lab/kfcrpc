@@ -1,7 +1,7 @@
 package com.cola.kfcrpc.core.annnotation;
 
-import com.cola.kfcrpc.core.consumer.ConsumserConfig;
-import com.cola.kfcrpc.core.provider.ProviderConfig;
+import com.cola.kfcrpc.core.config.ConsumserConfig;
+import com.cola.kfcrpc.core.config.ProviderConfig;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

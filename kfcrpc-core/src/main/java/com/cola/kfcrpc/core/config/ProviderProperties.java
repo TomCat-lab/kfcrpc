@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Configuration
-@ConfigurationProperties(prefix = "provider")
+@ConfigurationProperties(prefix = "kfcrpc.provider")
 @Data
 public class ProviderProperties {
     private Map<String, String> metas;
