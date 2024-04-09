@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.cola</groupId>
         <artifactId>kfcrpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${kfcrpc.version}</version>
     </parent>
 
     <dependencyManagement>
@@ -21,7 +21,7 @@
     </dependencyManagement>
 
     <artifactId>kfcrpc-demo-provider</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${kfcrpc.version}</version>
     <name>kfcrpc-demo-provider</name>
     <description>kfcrpc-demo-provider</description>
     <dependencies>
@@ -33,12 +33,12 @@
         <dependency>
             <groupId>com.cola</groupId>
             <artifactId>kfcrpc-demo-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kfcrpc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.cola</groupId>
             <artifactId>kfcrpc-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kfcrpc.version}</version>
         </dependency>
 
         <dependency>

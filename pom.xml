@@ -4,11 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cola</groupId>
     <artifactId>kfcrpc</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${kfcrpc.version}</version>
     <name>kfcrpc</name>
     <packaging>pom</packaging>
     <description>kfcrpc</description>
     <properties>
+        <kfcrpc.version>0.0.1-SNAPSHOT</kfcrpc.version>
         <spring.boot.version>3.2.4</spring.boot.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>

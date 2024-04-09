@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.cola</groupId>
         <artifactId>kfcrpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${kfcrpc.version}</version>
     </parent>
     <artifactId>kfcrpc-core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${kfcrpc.version}</version>
     <name>kfcrpc-core</name>
     <description>kfcrpc-core</description>
     <dependencies>

@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.cola</groupId>
         <artifactId>kfcrpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${kfcrpc.version}</version>
     </parent>
     <artifactId>kfcrpc-demo-consumer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${kfcrpc.version}</version>
     <name>kfcrpc-demo-consumer</name>
     <description>kfcrpc-demo-consumer</description>
     <dependencyManagement>
@@ -32,12 +32,12 @@
         <dependency>
             <groupId>com.cola</groupId>
             <artifactId>kfcrpc-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kfcrpc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.cola</groupId>
             <artifactId>kfcrpc-demo-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kfcrpc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>com.cola</groupId>
             <artifactId>kfcrpc-demo-provider</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${kfcrpc.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
