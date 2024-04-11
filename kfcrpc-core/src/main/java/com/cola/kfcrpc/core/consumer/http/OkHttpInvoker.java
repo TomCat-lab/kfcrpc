@@ -22,6 +22,7 @@ public class OkHttpInvoker implements HttpInvoker{
                 .readTimeout(timeout,TimeUnit.MILLISECONDS)
                 .writeTimeout(timeout,TimeUnit.MILLISECONDS)
                 .connectionPool(new ConnectionPool(16,60,TimeUnit.SECONDS))
+                .retryOnConnectionFailure(true)
                 .build();
     }
 

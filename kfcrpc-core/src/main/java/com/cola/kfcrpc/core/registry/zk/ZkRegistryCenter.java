@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
@@ -31,8 +32,14 @@ public class ZkRegistryCenter implements RegistryCenter {
 
     @Value("${kfcrpc.zkRoot}")
     private String zkRoot;
+
+    private boolean running;
     @Override
     public void start() {
+        if (running) {
+            log.info("zk has running in this zkserver:{},root:{}",zkServer,zkRoot);
+            return;
+        }
 //        String url = "localhost:2181";
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000,3);
         client = CuratorFrameworkFactory.builder()
@@ -41,11 +48,16 @@ public class ZkRegistryCenter implements RegistryCenter {
                 .namespace(zkRoot)
                 .build();
         client.start();
+        if (client.getState().compareTo(CuratorFrameworkState.STARTED) == 0) running = true;
         log.info("zk start,connectString:{},namespace:{}",zkServer,zkRoot);
     }
 
     @Override
     public void stop() {
+        if (!running){
+            log.info("zk client is not running in  this zkserver:{},root:{}",zkServer,zkRoot);
+            return;
+        }
         log.info("zk stop,namespace:{}","kfcrpc");
         if (treeCache !=null) treeCache.close();
         client.close();
@@ -117,8 +129,10 @@ public class ZkRegistryCenter implements RegistryCenter {
         treeCache = TreeCache.newBuilder(client, servicePath).setCacheData(true).setMaxDepth(2).build();
         try {
             treeCache.getListenable().addListener((curator,event)->{
-                 log.info("subscribe:{}",event);
-                 chagedListener.fire(new Event(fetchAll(service)));
+                if (running) {
+                    log.info("subscribe:{}", event);
+                    chagedListener.fire(new Event(fetchAll(service)));
+                }
             });
             treeCache.start();
         } catch (Exception e) {
