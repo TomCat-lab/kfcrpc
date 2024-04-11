@@ -49,7 +49,7 @@ public class ZkRegistryCenter implements RegistryCenter {
                 .build();
         client.start();
         if (client.getState().compareTo(CuratorFrameworkState.STARTED) == 0) running = true;
-        log.info("zk start,connectString:{},namespace:{}",zkServer,zkRoot);
+        log.info("zk start,connectString:{},namespace:{},running:{}",zkServer,zkRoot,running);
     }
 
     @Override
@@ -61,8 +61,10 @@ public class ZkRegistryCenter implements RegistryCenter {
 
         if (treeCache !=null) treeCache.close();
         client.close();
-        if (client.getState().compareTo(CuratorFrameworkState.STARTED) == 0){
-            log.info("zk client stop,namespace:{}","kfcrpc");
+        if (client.getState().compareTo(CuratorFrameworkState.STOPPED) == 0){
+            running = false;
+            log.info("zk client stop, in  this zkserver:{},root:{},running:{}",zkServer,zkRoot,running);
+
         }
 
     }
