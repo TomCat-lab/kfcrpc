@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.cola</groupId>
+        <groupId>io.github.tomcat-lab</groupId>
         <artifactId>kfcrpc</artifactId>
         <version>${kfcrpc.version}</version>
     </parent>
@@ -30,12 +30,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.cola</groupId>
+            <groupId>io.github.tomcat-lab</groupId>
             <artifactId>kfcrpc-core</artifactId>
             <version>${kfcrpc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola</groupId>
+            <groupId>io.github.tomcat-lab</groupId>
             <artifactId>kfcrpc-demo-api</artifactId>
             <version>${kfcrpc.version}</version>
         </dependency>
@@ -46,7 +46,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.cola</groupId>
+            <groupId>io.github.tomcat-lab</groupId>
             <artifactId>kfcrpc-demo-provider</artifactId>
             <version>${kfcrpc.version}</version>
             <scope>test</scope>

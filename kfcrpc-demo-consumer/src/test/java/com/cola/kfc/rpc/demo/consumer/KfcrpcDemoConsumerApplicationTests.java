@@ -48,7 +48,7 @@ class KfcrpcDemoConsumerApplicationTests {
         System.out.println(" ====================================== ");
         System.out.println(" ====================================== ");
         context2 = SpringApplication.run(KfcrpcDemoProviderApplication.class,
-                "--server.port=8095",
+                "--server.port=8096",
                 "--kfcrpc.zk.server=localhost:2182",
                 "--kfcrpc.app.env=test",
                 "--logging.level.com.cola.kfcrpc=info",
