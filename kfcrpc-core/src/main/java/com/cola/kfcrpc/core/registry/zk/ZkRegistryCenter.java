@@ -58,9 +58,12 @@ public class ZkRegistryCenter implements RegistryCenter {
             log.info("zk client is not running in  this zkserver:{},root:{}",zkServer,zkRoot);
             return;
         }
-        log.info("zk stop,namespace:{}","kfcrpc");
+
         if (treeCache !=null) treeCache.close();
         client.close();
+        if (client.getState().compareTo(CuratorFrameworkState.STARTED) == 0){
+            log.info("zk client stop,namespace:{}","kfcrpc");
+        }
 
     }
 
