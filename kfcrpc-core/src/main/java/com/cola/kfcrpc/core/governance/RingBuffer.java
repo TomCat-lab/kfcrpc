@@ -3,11 +3,12 @@ package com.cola.kfcrpc.core.governance;
 import lombok.ToString;
 
 /**
- * Ring Buffer implement based on an int array.
- *
- * @Author : kimmking(kimmking@apache.org)
- * @create 2022-11-20 19:39:27
+ * Class: RingBuffer
+ * Author: cola
+ * Date: 2024/4/12
+ * Description: 
  */
+
 @ToString
 public class RingBuffer {
 

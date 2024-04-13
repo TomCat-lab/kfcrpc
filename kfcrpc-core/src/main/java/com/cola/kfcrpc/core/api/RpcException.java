@@ -1,5 +1,8 @@
 package com.cola.kfcrpc.core.api;
 
+import lombok.Data;
+
+@Data
 public class RpcException extends RuntimeException{
     private String errcode;
 
@@ -23,6 +26,11 @@ public class RpcException extends RuntimeException{
         this.errcode = errcode;
     }
 
+    public RpcException(String cause,String errcode) {
+        super(cause);
+        this.errcode = errcode;
+    }
+
     public RpcException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
@@ -32,5 +40,6 @@ public class RpcException extends RuntimeException{
     //Z -> Unknow 异常
     public static final String SocketTimeoutEx = "X001" + "-" + "http_invoke_timeout";
     public static final String NoSuchMethodEx  = "X002" + "-" + "method_not_exists";
+    public static final String ExceedLimitEx  = "X003" + "-" + "tps_exceed_limit";
     public static final String UnknownEx  = "Z001" + "-" + "unknown";
 }

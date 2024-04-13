@@ -4,12 +4,12 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * SlidingTimeWindow implement based on RingBuffer and TS(timestamp).
- * Use TS/1000->SecondNumber to mapping an index slot in a RingBuffer.
- *
- * @Author : kimmking(kimmking@apache.org)
- * @create 2022-11-20 19:39:27
+ * Class: SlidingTimeWindow
+ * Author: cola
+ * Date: 2024/4/12
+ * Description: 
  */
+
 @ToString
 @Slf4j
 public class SlidingTimeWindow {
@@ -101,4 +101,26 @@ public class SlidingTimeWindow {
         return _curr_ts;
     }
 
+    public int calcSum() {
+       long ts = System.currentTimeMillis()/1000;
+            if(ts == _curr_ts) {
+                log.debug("window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size);
+                this.ringBuffer.incr(_curr_mark, 1);
+            } else if(ts > _curr_ts && ts < _curr_ts + size) {
+                int offset = (int)(ts - _curr_ts);
+                log.debug("window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size + ", offset:" + offset);
+                this.ringBuffer.reset(_curr_mark + 1, offset);
+//                this.ringBuffer.incr(_curr_mark + offset, 1);
+                _curr_ts = ts;
+                _curr_mark = (_curr_mark + offset) % size;
+            } else if(ts >= _curr_ts + size) {
+                log.debug("window ts:" + ts + ", curr_ts:" + _curr_ts + ", size:" + size);
+                this.ringBuffer.reset();
+                initRing(ts);
+            }
+
+        this.sum = this.ringBuffer.sum();
+        log.debug("calc sum window: " + this.toString());
+        return sum;
+    }
 }

@@ -1,7 +1,6 @@
 package com.cola.kfcrpc.core.config;
 
 import com.cola.kfcrpc.core.api.RegistryCenter;
-import com.cola.kfcrpc.core.config.ProviderProperties;
 import com.cola.kfcrpc.core.provider.ProviderBootStrap;
 import com.cola.kfcrpc.core.provider.ProviderInvoker;
 import com.cola.kfcrpc.core.registry.zk.ZkRegistryCenter;
@@ -43,6 +42,7 @@ public class ProviderConfig {
     public ProviderInvoker providerInvoke(@Autowired ProviderBootStrap providerBootStrap){
         return new ProviderInvoker(providerBootStrap);
     }
+
 
 
     @Bean
