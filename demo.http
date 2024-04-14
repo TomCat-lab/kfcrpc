@@ -20,3 +20,5 @@ GET http://localhost:8082/find?timeout=1000
 ### 通过8081调用接口 修改超时
 GET http://localhost:8084/ports?ports=8081,8083
 
+### 通过8081调用接口 修改超时
+GET http://localhost:8085/metas

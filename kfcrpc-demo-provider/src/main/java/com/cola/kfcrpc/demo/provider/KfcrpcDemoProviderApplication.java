@@ -3,11 +3,13 @@ package com.cola.kfcrpc.demo.provider;
 import com.cola.kfcrpc.core.api.RpcException;
 import com.cola.kfcrpc.core.api.RpcRequest;
 import com.cola.kfcrpc.core.api.RpcResponse;
+import com.cola.kfcrpc.core.config.ApolloChangedListener;
 import com.cola.kfcrpc.core.config.ProviderConfig;
 import com.cola.kfcrpc.core.config.ProviderProperties;
 import com.cola.kfcrpc.core.transport.KfcRpcTransport;
 import com.cola.kfcrpc.demo.api.User;
 import com.cola.kfcrpc.demo.api.UserService;
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,6 +31,7 @@ import java.util.Map;
 @SpringBootApplication
 @Import(ProviderConfig.class)
 @RestController
+@EnableApolloConfig
 public class KfcrpcDemoProviderApplication {
 
 //    @Autowired
@@ -43,6 +46,11 @@ public class KfcrpcDemoProviderApplication {
 
     @Autowired
     ProviderProperties providerProperties;
+
+    @Bean
+    ApolloChangedListener apolloChangedListener(){
+        return new ApolloChangedListener();
+    }
 
 
     public static void main(String[] args) {
@@ -116,7 +124,7 @@ public class KfcrpcDemoProviderApplication {
         System.out.println("return : "+rpcResponse4.getData());
 
         // test 5 for traffic control
-        System.out.println("Provider Case 5. >>===[复杂测试：测试流量并发控制]===");
+      /*  System.out.println("Provider Case 5. >>===[复杂测试：测试流量并发控制]===");
         for (int i = 0; i < 120; i++) {
             try {
                 Thread.sleep(1000);
@@ -128,7 +136,7 @@ public class KfcrpcDemoProviderApplication {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
+        } */
 
 
     }
@@ -143,7 +151,11 @@ public class KfcrpcDemoProviderApplication {
         return response;
     }
 
-
+    @RequestMapping("/metas")
+    public String meta() {
+        System.out.println(System.identityHashCode(providerProperties.getMetas()));
+        return providerProperties.getMetas().toString();
+    }
 
 
 }

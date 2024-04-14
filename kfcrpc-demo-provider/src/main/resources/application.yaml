@@ -1,3 +1,18 @@
+spring:
+  application:
+    name: app2
+app:
+  id: app2
+apollo:
+  cacheDir: /opt/data/
+  cluster: default
+  meta: http://localhost:8080
+  autoUpdateInjectedSpringProperties: true
+  bootstrap:
+    enabled: true
+    namespaces: app2,application
+    eagerLoad:
+      enabled: false
 server:
   port: 9051
 
@@ -19,3 +34,4 @@ logging:
   level:
     root: info
     com.cola.kfcrpc: debug
+    com.ctrip: debug
